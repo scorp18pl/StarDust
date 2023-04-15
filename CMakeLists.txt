@@ -6,19 +6,11 @@ project(pixel_dust VERSION 0.1.0 DESCRIPTION "a simple OpenGL based 2D pixel ren
 include(GNUInstallDirs)
 
 add_library(pixel_dust STATIC
-        )
+        Code/Source/PixelDust/Window/Window.cpp
+        Code/Include/PixelDust/Window/Window.h
+)
 
-find_package(OpenGL REQUIRED)
-
-find_library(UNIVERSAL universal)
-
-add_library(glad STATIC
-        3rdParty/glad/src/glad.c
-        )
-
-target_include_directories(glad PUBLIC
-        3rdParty/glad/include
-        )
+include(Find3rdPartyLibs.cmake)
 
 target_link_libraries(pixel_dust PUBLIC OpenGL::GL glad glfw ${UNIVERSAL})
 
@@ -36,5 +28,5 @@ install(TARGETS pixel_dust
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         )
 
-install(FILES ${CMAKE_BINARY_DIR}/tools/universal.pc
+install(FILES ${CMAKE_BINARY_DIR}/tools/pixel_dust.pc
         DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig)

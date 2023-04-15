@@ -10,6 +10,9 @@
     1. Functional Requirements
     2. Non-Functional Requirements
     3. Interface Requirements
+3. System Architecture
+   1. High-Level system Architecture diagram
+   2. Third Party Dependencies
 
 ## Introduction
 
