@@ -1,2 +1,3 @@
-# PixelDust
-A 2D pixel rendering engine
+<h1 align="center">
+  <img src="static/stardust-logo-name.png" width="100%" alt="Universal">
+</h1>
