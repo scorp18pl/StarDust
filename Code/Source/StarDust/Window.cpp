@@ -1,4 +1,3 @@
-#include <StarDust/Drawable/Drawable.h>
 #include <StarDust/Utils.h>
 #include <StarDust/Window.h>
 #include <glad/glad.h>
@@ -39,7 +38,8 @@ namespace Str
         }
 
         glfwSwapInterval(0);
-        glEnable(GL_DEPTH_TEST);
+        GL_CHECK(glEnable(GL_DEPTH_TEST));
+        GL_CHECK(glClearColor(0.1f, 0.1f, 0.1f, 1.0f));
 
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
@@ -50,6 +50,8 @@ namespace Str
         ImGui_ImplOpenGL3_Init("#version 460");
 
         ImGui::StyleColorsDark();
+
+        Renderer::Get().SetPixelizationResolution(m_width, m_height, m_width, m_height);
     }
 
     Window::~Window()
@@ -82,13 +84,13 @@ namespace Str
 
     void Window::Clear()
     {
-        m_renderer.RenderBatched();
+        GL_CHECK(glClear(GL_COLOR_BUFFER_BIT));
+        Renderer::Get().Render();
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         GL_CHECK(glfwSwapBuffers(m_window));
-        GL_CHECK(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
     }
 
     void Window::Update() const
@@ -100,8 +102,8 @@ namespace Str
         ImGui::NewFrame();
     }
 
-    void Window::Draw(Drawable* drawable)
+    void Window::Draw(const ModelInstance& drawable)
     {
-        m_renderer.AddDrawRequest(drawable);
+        Renderer::Get().AddDrawRequest(drawable);
     }
 } // namespace Str

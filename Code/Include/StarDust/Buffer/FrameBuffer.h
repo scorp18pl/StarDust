@@ -1,17 +1,31 @@
 #pragma once
 
+#include <StarDust/Buffer/RenderBuffer.h>
+#include <StarDust/Texture.h>
 #include <glad/glad.h>
-#include <StarDust/Buffer/Buffer.h>
 
 namespace Str
 {
-    class FrameBuffer : public Buffer<GL_FRAMEBUFFER>
+    class FrameBuffer
     {
     public:
         FrameBuffer();
         FrameBuffer(const FrameBuffer&) = delete;
         FrameBuffer(FrameBuffer&&) = delete;
+        ~FrameBuffer();
+
+        void Bind() const;
+        static void Unbind();
+
+        void AttachTexture(const Texture& texture, GLenum attachmentType) const;
+        void AttachRenderBuffer(
+            const RenderBuffer& renderBuffer, GLenum attachmentType) const;
+
+        void Draw();
 
         FrameBuffer& operator=(const FrameBuffer&) = delete;
+
+    private:
+        unsigned int m_id;
     };
 } // namespace Str

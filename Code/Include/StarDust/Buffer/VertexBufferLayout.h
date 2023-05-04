@@ -16,8 +16,8 @@ namespace Str
     {
     public:
         VertexBufferLayout();
-        VertexBufferLayout(const VertexBufferLayout&) = delete;
-        VertexBufferLayout(VertexBufferLayout&&) = delete;
+        VertexBufferLayout(const VertexBufferLayout&) = default;
+        VertexBufferLayout(VertexBufferLayout&&) = default;
         ~VertexBufferLayout() = default;
 
         template<typename T>
@@ -27,7 +27,7 @@ namespace Str
             const;
         [[nodiscard]] unsigned int GetStride() const;
 
-        VertexBufferLayout& operator=(const VertexBufferLayout&) = delete;
+        VertexBufferLayout& operator=(const VertexBufferLayout&) = default;
 
     private:
         std::vector<VertexBufferElement> m_elements;

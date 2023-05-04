@@ -39,6 +39,6 @@ namespace Str
             GL_ARRAY_BUFFER,
             size,
             data,
-            isStatic ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW));
+            isStatic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW));
     }
 } // namespace Str

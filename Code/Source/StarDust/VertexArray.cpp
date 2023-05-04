@@ -1,5 +1,5 @@
-#include <StarDust/VertexArray.h>
 #include <StarDust/Utils.h>
+#include <StarDust/VertexArray.h>
 
 namespace Str
 {
@@ -24,7 +24,9 @@ namespace Str
     }
 
     void VertexArray::AddBuffer(
-        const VertexBuffer& vertexBuffer, const VertexBufferLayout& layout)
+        const VertexBuffer& vertexBuffer,
+        const VertexBufferLayout& layout,
+        unsigned int baseIndex)
     {
         Bind();
         vertexBuffer.Bind();
@@ -32,16 +34,22 @@ namespace Str
         unsigned int offset = 0;
         for (unsigned int i = 0; i < elements.size(); ++i)
         {
+            unsigned int index = baseIndex + i;
             const auto& element = elements[i];
-            GL_CHECK(glEnableVertexAttribArray(i));
+            GL_CHECK(glEnableVertexAttribArray(index));
             GL_CHECK(glVertexAttribPointer(
-                i,
+                index,
                 element.count,
                 element.type,
                 element.normalized,
                 layout.GetStride(),
                 (const void*)offset));
+            if (baseIndex != 0)
+            {
+                GL_CHECK(glVertexAttribDivisor(index, 1));
+            }
             offset += element.count * Utils::GetSizeOfType(element.type);
         }
+
     }
 } // namespace Str

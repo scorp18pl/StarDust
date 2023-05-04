@@ -1,86 +1,106 @@
-#include <StarDust/Drawable/Drawable.h>
+#include <StarDust/Model/Mesh.h>
+#include <StarDust/Model/ModelRegistry.h>
 #include <StarDust/Renderer.h>
+#include <StarDust/Shader/ShaderProgramRegistry.h>
 #include <StarDust/Utils.h>
-#include <cstring>
+#include <imgui/imgui.h>
+#include <imgui/imgui_impl_opengl3.h>
 
 namespace Str
 {
-    Renderer::Renderer()
-        : m_drawQueue{}
-        , m_cachedVertexCount{ 0LU }
-        , m_cachedIndexCount{ 0LU }
+    void Renderer::AddDrawRequest(const ModelInstance& primitiveInstance)
     {
-    }
+        PrimitiveType type = primitiveInstance.GetPrimitiveType();
 
-    void Renderer::AddDrawRequest(Drawable* drawable)
-    {
-        const auto& Vertices = drawable->GetVertices();
-        const auto& Indices = drawable->GetIndices();
+        if (type == PrimitiveType::None)
+        {
+            return;
+        }
 
-        m_cachedVertexCount += Vertices.size();
-        m_cachedIndexCount += Indices.size();
-
-        m_drawQueue.push_back({
-            Vertices,
-            Indices,
+        m_drawQueue[type].push_back({
+            primitiveInstance.GetTransform().GetMatrix(),
+            primitiveInstance.GetTransform().GetRotation(),
+            primitiveInstance.GetColor(),
         });
     }
 
-    void Renderer::RenderBatched()
+    void Renderer::Render()
     {
-        static VertexBuffer vertexBuffer;
-        static IndexBuffer indexBuffer;
-        static VertexArray vertexArray = ([&]() {
-            Str::VertexBufferLayout layout;
-            layout.Push<float>(3);
-            layout.Push<float>(4);
-            layout.Push<float>(2);
+        m_frameBuffer.Bind();
 
-            VertexArray vertexArray;
-            vertexArray.AddBuffer(vertexBuffer, layout);
+        GL_CHECK(glViewport(0, 0, m_pixelWidth, m_pixelHeight));
 
-            return vertexArray;
-        }).operator()();
+        GL_CHECK(glEnable(GL_DEPTH_TEST));
+        GL_CHECK(glClearColor(0.07f, 0.13f, 0.17f, 1.0f));
+        GL_CHECK(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-        m_vertices.resize(m_cachedVertexCount);
-        m_indices.resize(m_cachedIndexCount);
+        ShaderProgram& instanceShader =
+            ShaderProgramRegistry::Get().GetShaderProgram("model_instance");
+        instanceShader.Bind();
 
-        size_t currentVertexCount = 0LU;
-        size_t currentIndexCount = 0LU;
-        for (const auto& request : m_drawQueue)
+        for (auto& primitive : m_drawQueue)
         {
-            std::copy(
-                request.m_vertices.begin(),
-                request.m_vertices.end(),
-                m_vertices.begin() + currentVertexCount);
+            PrimitiveType type = primitive.first;
+            std::vector<InstanceData>& instances = primitive.second;
 
-            std::copy(
-                request.m_indices.begin(),
-                request.m_indices.end(),
-                m_indices.begin() + currentIndexCount);
-
-            for (size_t index = 0LU; index < request.m_indices.size(); ++index)
+            if (instances.empty())
             {
-                m_indices[currentIndexCount + index] += currentVertexCount;
+                continue;
             }
 
-            currentVertexCount += request.m_vertices.size();
-            currentIndexCount += request.m_indices.size();
+            Model& model = ModelRegistry::Get().GetPrimitiveModel(type);
+
+            model.RenderInstances(instances);
         }
 
-        vertexBuffer.SetData(
-            m_vertices.data(), m_vertices.size() * sizeof(Vertex));
-        indexBuffer.SetData(
-            m_indices.data(), m_indices.size());
-
         m_drawQueue.clear();
-        m_cachedVertexCount = 0LU;
-        m_cachedIndexCount = 0LU;
 
-        indexBuffer.Bind();
-        vertexBuffer.Bind();
-        vertexArray.Bind();
-        GL_CHECK(glDrawElements(
-            GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, nullptr));
+        Str::FrameBuffer::Unbind();
+
+        GL_CHECK(glViewport(0, 0, m_windowWidth, m_windowHeight));
+
+        ShaderProgram& postProcShader =
+            ShaderProgramRegistry::Get().GetShaderProgram("pixelate");
+        postProcShader.Bind();
+        postProcShader.SetUniform1i("screenTexture", 0);
+        GL_CHECK(glDisable(GL_DEPTH_TEST));
+        m_pixelizationTexture.Bind();
+        m_frameBuffer.Draw();
+    }
+
+    Renderer& Renderer::Get()
+    {
+        static Renderer renderer;
+        return renderer;
+    }
+
+    void Renderer::SetPostprocessingFlags(PostProcFlag flags)
+    {
+        m_postProcFlags = flags;
+    }
+
+    void Renderer::SetPixelizationResolution(
+        unsigned int width,
+        unsigned int height,
+        unsigned int windowWidth,
+        unsigned int windowHeight)
+    {
+        m_pixelWidth = width;
+        m_pixelHeight = height;
+
+        m_windowWidth = windowWidth;
+        m_windowHeight = windowHeight;
+
+        m_pixelizationTexture = Texture(nullptr, width, height);
+        m_frameBuffer.AttachTexture(
+            m_pixelizationTexture, GL_COLOR_ATTACHMENT0);
+
+        m_renderBuffer.SetStorage(GL_DEPTH24_STENCIL8, width, height);
+
+        m_frameBuffer.AttachRenderBuffer(
+            m_renderBuffer, GL_DEPTH_STENCIL_ATTACHMENT);
+
+        FrameBuffer::Unbind();
+        RenderBuffer::Unbind();
     }
 } // namespace Str

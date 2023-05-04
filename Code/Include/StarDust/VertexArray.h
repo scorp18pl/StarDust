@@ -14,8 +14,11 @@ namespace Str
         ~VertexArray();
 
         void Bind() const;
-        static void Unbind() ;
-        void AddBuffer(const VertexBuffer& vertexBuffer, const VertexBufferLayout& layout);
+        static void Unbind();
+        void AddBuffer(
+            const VertexBuffer& vertexBuffer,
+            const VertexBufferLayout& layout,
+            unsigned int baseIndex = 0U);
 
         VertexArray& operator=(const VertexArray&) = default;
     private:

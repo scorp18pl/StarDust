@@ -1,5 +1,8 @@
 #include <StarDust/Buffer/VertexBufferLayout.h>
+#include <StarDust/Model/ModelInstance.h>
 #include <StarDust/Utils.h>
+#include <Universal/Math/Matrix/Matrix3x4f.h>
+#include <Universal/Math/Vector/Vector3f.h>
 #include <stdexcept>
 
 namespace Str
@@ -34,6 +37,39 @@ namespace Str
     {
         m_elements.push_back({ GL_UNSIGNED_BYTE, count, GL_TRUE });
         m_stride += count * Utils::GetSizeOfType(GL_UNSIGNED_BYTE);
+    }
+
+    template<>
+    void VertexBufferLayout::Push<Uni::Math::Vector3f>(unsigned int count)
+    {
+        m_elements.push_back({ GL_FLOAT, 3 * count, GL_FALSE });
+        m_stride += 3 * Utils::GetSizeOfType(GL_FLOAT) * count;
+    }
+
+    template<>
+    void VertexBufferLayout::Push<Uni::Math::Vector4f>(unsigned int count)
+    {
+        m_elements.push_back({ GL_FLOAT, 4 * count, GL_FALSE });
+        m_stride += 4 * Utils::GetSizeOfType(GL_FLOAT) * count;
+    }
+
+    template<>
+    void VertexBufferLayout::Push<Uni::Math::Matrix3x4f>(unsigned int count)
+    {
+        m_elements.push_back({ GL_FLOAT, 12 * count, GL_FALSE });
+        m_stride += 12 * Utils::GetSizeOfType(GL_FLOAT) * count;
+    }
+
+    template<>
+    void VertexBufferLayout::Push<InstanceData>(unsigned int count)
+    {
+        for (int i = 0; i < 3; ++i)
+        {
+            m_elements.push_back({ GL_FLOAT, 4, GL_FALSE });
+            m_stride += 4 * Utils::GetSizeOfType(GL_FLOAT);
+        }
+        m_elements.push_back({ GL_FLOAT, 4, GL_FALSE });
+        m_stride += 4 * Utils::GetSizeOfType(GL_FLOAT);
     }
 
     const std::vector<VertexBufferElement>& VertexBufferLayout::GetElements()

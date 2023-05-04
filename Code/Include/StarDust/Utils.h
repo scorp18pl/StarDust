@@ -7,7 +7,7 @@ namespace Str::Utils
 
 #ifndef NDEBUG
 
-#define GL_CHECK(x) do { x; Str::Utils::GlCheckError(__FILE__, __LINE__); } while (0)
+#define GL_CHECK(x) { x; Str::Utils::GlCheckError(__FILE__, __LINE__); }
 
 #else
 

@@ -1,34 +1,50 @@
 #pragma once
 
-#include <StarDust/Buffer/IndexBuffer.h>
-#include <StarDust/Shader.h>
-#include <StarDust/Vertex.h>
-#include <StarDust/VertexArray.h>
+#include <StarDust/Buffer/FrameBuffer.h>
+#include <StarDust/Buffer/RenderBuffer.h>
+#include <StarDust/Model/ModelInstance.h>
+#include <StarDust/Texture.h>
+#include <unordered_map>
 
 namespace Str
 {
-    class Drawable;
-
-    struct DrawRequest
+    enum class PostProcFlag : uint8_t
     {
-        const VertexList& m_vertices;
-        const IndexList& m_indices;
+        None = 0,
+        Pixelized = 1 << 0,
     };
 
     class Renderer
     {
     public:
-        Renderer();
+        static Renderer& Get();
 
-        void AddDrawRequest(Drawable* drawable);
-        void RenderBatched();
+        void AddDrawRequest(const ModelInstance& primitiveInstance);
+        void Render();
+
+        void SetPostprocessingFlags(PostProcFlag flags = PostProcFlag::None);
+        void SetPixelizationResolution(
+            unsigned int width,
+            unsigned int height,
+            unsigned int windowWidth,
+            unsigned int windowHeight);
 
     private:
-        std::vector<Vertex> m_vertices;
-        std::vector<unsigned int> m_indices;
+        std::unordered_map<PrimitiveType, std::vector<InstanceData>>
+            m_drawQueue;
 
-        std::vector<DrawRequest> m_drawQueue;
-        size_t m_cachedVertexCount{ 0LU };
-        size_t m_cachedIndexCount{ 0LU };
+        PostProcFlag m_postProcFlags = PostProcFlag::None;
+
+        unsigned int m_pixelWidth = 0;
+        unsigned int m_pixelHeight = 0;
+
+        unsigned int m_windowWidth = 0;
+        unsigned int m_windowHeight = 0;
+
+        FrameBuffer m_frameBuffer;
+        RenderBuffer m_renderBuffer;
+        Texture m_pixelizationTexture;
+
+        Renderer() = default;
     };
 } // namespace Str

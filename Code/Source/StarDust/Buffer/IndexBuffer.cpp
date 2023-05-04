@@ -39,7 +39,6 @@ namespace Str
     {
         m_count = count;
         Bind();
-        GL_CHECK(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_id));
         GL_CHECK(glBufferData(
             GL_ELEMENT_ARRAY_BUFFER,
             count * sizeof(unsigned int),

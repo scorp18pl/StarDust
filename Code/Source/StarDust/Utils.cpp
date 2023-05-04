@@ -36,8 +36,9 @@ namespace Str
                 break;
             }
 
-            std::cerr << "OpenGL Error: " << error << " in " << file
-                      << " at line " << line << std::endl;
+            throw std::runtime_error(
+                "OpenGL Error: " + error + " in " + file + " at line " +
+                std::to_string(line));
         }
     }
 

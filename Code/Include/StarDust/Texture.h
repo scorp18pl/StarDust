@@ -9,18 +9,21 @@ namespace Str
     class Texture
     {
     public:
-        explicit Texture(const std::string& path);
-        Texture(const Texture&) = delete; // TODO: Implement copy constructor
-        Texture(Texture&&) noexcept;
+        explicit Texture(const void* data = nullptr, unsigned int width = 0U, unsigned int height = 0U);
+        Texture(const Texture&); // TODO: Implement copy constructor
+        Texture(Texture&&) = delete;
         ~Texture();
 
-        const Uni::Grpx::Bitmap& GetBitmap() const;
+        [[nodiscard]] unsigned int GetID() const;
 
         void Bind(unsigned int textureSlot = 0U) const;
         static void Unbind();
 
+        Texture& operator=(const Texture&);
+
     private:
-        Uni::Grpx::Bitmap m_bitmap;
         unsigned int m_id;
+        const void* m_data;
+        unsigned int m_width, m_height;
     };
 } // namespace Str

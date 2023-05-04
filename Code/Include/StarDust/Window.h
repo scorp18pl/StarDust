@@ -22,15 +22,13 @@ namespace Str
 
         void Clear();
         void Update() const;
-        void Draw(Drawable* drawable);
+        void Draw(const ModelInstance& drawable);
 
         Window& operator=(const Window&) = delete;
 
     private:
         GLFWwindow* m_window;
         int m_width, m_height;
-
-        Renderer m_renderer;
     };
 
 } // namespace Str

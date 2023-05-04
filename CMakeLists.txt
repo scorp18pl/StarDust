@@ -10,12 +10,12 @@ add_library(stardust STATIC
         Code/Include/StarDust/Buffer/VertexBuffer.h
         Code/Include/StarDust/Buffer/IndexBuffer.h
         Code/Include/StarDust/VertexArray.h
-        Code/Include/StarDust/Shader.h
+        Code/Include/StarDust/Shader/ShaderProgram.h
         Code/Source/StarDust/Window.cpp
         Code/Source/StarDust/Buffer/VertexBuffer.cpp
         Code/Source/StarDust/Buffer/IndexBuffer.cpp
         Code/Source/StarDust/VertexArray.cpp
-        Code/Source/StarDust/Shader.cpp
+        Code/Source/StarDust/Shader/ShaderProgram.cpp
         Code/Source/StarDust/Utils.cpp
         Code/Include/StarDust/Utils.h
         Code/Source/StarDust/Buffer/VertexBufferLayout.cpp
@@ -24,11 +24,17 @@ add_library(stardust STATIC
         Code/Include/StarDust/Texture.h
         Code/Source/StarDust/Buffer/FrameBuffer.cpp
         Code/Include/StarDust/Buffer/FrameBuffer.h
-        Code/Include/StarDust/Buffer/Buffer.h
-        Code/Include/StarDust/Drawable/Drawable.h
-        Code/Source/StarDust/Drawable/Rectangle.cpp
-        Code/Include/StarDust/Drawable/Rectangle.h
-        Code/Include/StarDust/Vertex.h Code/Source/StarDust/Renderer.cpp Code/Include/StarDust/Renderer.h Code/Source/StarDust/Drawable/Box.cpp Code/Include/StarDust/Drawable/Box.h Code/Source/StarDust/Drawable/Geometry3D.cpp Code/Include/StarDust/Drawable/Geometry3D.h)
+        Code/Source/StarDust/Renderer.cpp
+        Code/Include/StarDust/Renderer.h
+        Code/Source/StarDust/Shader/ShaderProgramRegistry.cpp
+        Code/Include/StarDust/Shader/ShaderProgramRegistry.h
+        Code/Source/StarDust/Model/ModelRegistry.cpp
+        Code/Include/StarDust/Model/ModelRegistry.h
+        Code/Include/StarDust/Model/Mesh.h
+        Code/Source/StarDust/Model/Model.cpp
+        Code/Include/StarDust/Model/Model.h
+        Code/Source/StarDust/Model/ModelInstance.cpp
+        Code/Include/StarDust/Model/ModelInstance.h Code/Source/StarDust/Buffer/RenderBuffer.cpp Code/Include/StarDust/Buffer/RenderBuffer.h)
 
 include(Code/3rdParty/CreateTargets.cmake)
 
