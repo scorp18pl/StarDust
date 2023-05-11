@@ -32,12 +32,12 @@ void main()
     mat4 modelMatrix = RowsToMatrix(modelMatrixRow0, modelMatrixRow1, modelMatrixRow2);
     mat4 normalMatrix = RowsToMatrix(normalMatrixRow0, normalMatrixRow1, normalMatrixRow2);
 
-    i_position = u_proj * u_view * modelMatrix * vec4(position, 1.0f);
+    i_position = modelMatrix * vec4(position, 1.0f);
     i_TexCoord = texCoord;
 
     i_normal = normalMatrix * vec4(normal, 1.0f);
 
     i_color = color;
 
-    gl_Position = i_position;
+    gl_Position = u_proj * u_view * i_position;
 }

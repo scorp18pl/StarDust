@@ -17,6 +17,22 @@ namespace Str
         return m_primitiveModels.at(type);
     }
 
+    std::string ModelRegistry::GetPrimitiveModelName(PrimitiveType type)
+    {
+        switch (type)
+        {
+        case PrimitiveType::Triangle:
+            return "Triangle";
+        case PrimitiveType::Rectangle:
+            return "Rectangle";
+        case PrimitiveType::Box:
+            return "Box";
+        case PrimitiveType::Icosahedron:
+            return "Icosahedron";
+        }
+        return "";
+    }
+
     Mesh ModelRegistry::GeneratePrimitiveMesh(PrimitiveType type)
     {
         Mesh mesh;
@@ -262,7 +278,7 @@ namespace Str
              ++PhaseFourFace)
         {
             FaceTransforms[PhaseFourFace + IcosahedronHalfFaceCount] =
-                Uni::Math::Matrix3x4f::CreateFromScale({ 1.0f, 1.0f, -1.0f }) *
+                Uni::Math::Matrix3x4f::CreateFromRotationDegrees(180.0f, Uni::Math::Axis::X) *
                 Uni::Math::Matrix3x4f::CreateFromRotationDegrees(
                     60.0f, Uni::Math::Axis::Z) *
                 FaceTransforms[PhaseFourFace];

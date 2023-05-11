@@ -17,9 +17,12 @@ namespace Str
             return;
         }
 
+        Uni::Math::Transform globalTransform =
+            primitiveInstance.GetTransform().GetWorldTransform();
+
         m_drawQueue[type].push_back({
-            primitiveInstance.GetTransform().GetMatrix(),
-            primitiveInstance.GetTransform().GetRotation(),
+            globalTransform.GetMatrix(),
+            globalTransform.GetRotation(),
             primitiveInstance.GetColor(),
         });
     }
@@ -91,16 +94,23 @@ namespace Str
         m_windowWidth = windowWidth;
         m_windowHeight = windowHeight;
 
-        m_pixelizationTexture = Texture(nullptr, width, height);
-        m_frameBuffer.AttachTexture(
-            m_pixelizationTexture, GL_COLOR_ATTACHMENT0);
+        m_pixelizationTexture.SetData(
+            nullptr, width, height);
 
         m_renderBuffer.SetStorage(GL_DEPTH24_STENCIL8, width, height);
 
-        m_frameBuffer.AttachRenderBuffer(
-            m_renderBuffer, GL_DEPTH_STENCIL_ATTACHMENT);
-
         FrameBuffer::Unbind();
         RenderBuffer::Unbind();
+    }
+
+    Renderer::Renderer()
+        : m_pixelizationTexture(nullptr, 1, 1)
+    {
+        m_renderBuffer.SetStorage(GL_DEPTH24_STENCIL8, 1, 1);
+
+        m_frameBuffer.AttachTexture(
+            m_pixelizationTexture, GL_COLOR_ATTACHMENT0);
+        m_frameBuffer.AttachRenderBuffer(
+            m_renderBuffer, GL_DEPTH_STENCIL_ATTACHMENT);
     }
 } // namespace Str

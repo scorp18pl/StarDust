@@ -18,12 +18,12 @@ namespace Str
     public:
         ModelInstance(
             std::string modelName,
-            const Uni::Math::Transform& transform,
-            const Uni::Grpx::Color& color);
+            const Uni::Math::Transform& transform = Uni::Math::Transform(),
+            const Uni::Grpx::Color& color = Uni::Grpx::Color::White);
         ModelInstance(
             PrimitiveType primitiveType,
-            const Uni::Math::Transform& transform,
-            const Uni::Grpx::Color& color);
+            const Uni::Math::Transform& transform = Uni::Math::Transform(),
+            const Uni::Grpx::Color& color = Uni::Grpx::Color::White);
         ModelInstance(ModelInstance&&) noexcept = default;
         ~ModelInstance() = default;
 
@@ -34,6 +34,7 @@ namespace Str
 
         Uni::Math::Transform& GetTransform();
         Uni::Grpx::Color& GetColor();
+        void SetPrimitiveType(PrimitiveType primitiveType);
 
         ModelInstance& operator=(const ModelInstance&) = default;
 

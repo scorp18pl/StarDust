@@ -21,7 +21,7 @@ namespace Str
         void AttachRenderBuffer(
             const RenderBuffer& renderBuffer, GLenum attachmentType) const;
 
-        void Draw();
+        static void Draw();
 
         FrameBuffer& operator=(const FrameBuffer&) = delete;
 

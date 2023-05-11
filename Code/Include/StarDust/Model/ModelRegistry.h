@@ -13,6 +13,7 @@ namespace Str
     public:
         static ModelRegistry& Get();
         Model& GetPrimitiveModel(PrimitiveType type);
+        static std::string GetPrimitiveModelName(PrimitiveType type);
 
     private:
         ModelRegistry() = default;

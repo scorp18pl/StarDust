@@ -52,4 +52,9 @@ namespace Str
     {
         return m_color;
     }
+
+    void ModelInstance::SetPrimitiveType(PrimitiveType primitiveType)
+    {
+        m_primitiveType = primitiveType;
+    }
 } // namespace Str

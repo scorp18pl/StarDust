@@ -34,7 +34,7 @@ add_library(stardust STATIC
         Code/Source/StarDust/Model/Model.cpp
         Code/Include/StarDust/Model/Model.h
         Code/Source/StarDust/Model/ModelInstance.cpp
-        Code/Include/StarDust/Model/ModelInstance.h Code/Source/StarDust/Buffer/RenderBuffer.cpp Code/Include/StarDust/Buffer/RenderBuffer.h)
+        Code/Include/StarDust/Model/ModelInstance.h Code/Source/StarDust/Buffer/RenderBuffer.cpp Code/Include/StarDust/Buffer/RenderBuffer.h Code/Tests/StarDust/Tests.cpp)
 
 include(Code/3rdParty/CreateTargets.cmake)
 
@@ -49,7 +49,7 @@ set_target_properties(stardust PROPERTIES VERSION ${PROJECT_VERSION})
 
 configure_file(tools/stardust.pc.in tools/stardust.pc @ONLY)
 
-add_subdirectory(Code/Tests/StarDust/Demo)
+add_subdirectory(Code/Tests/StarDust)
 
 install(DIRECTORY Code/Include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 

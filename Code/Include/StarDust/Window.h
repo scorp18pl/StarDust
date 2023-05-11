@@ -24,6 +24,9 @@ namespace Str
         void Update() const;
         void Draw(const ModelInstance& drawable);
 
+        void SetPixelizationFactor(unsigned int factor);
+        GLFWwindow* GetNativeWindow() const;
+
         Window& operator=(const Window&) = delete;
 
     private:

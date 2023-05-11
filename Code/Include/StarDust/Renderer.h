@@ -45,6 +45,6 @@ namespace Str
         RenderBuffer m_renderBuffer;
         Texture m_pixelizationTexture;
 
-        Renderer() = default;
+        Renderer();
     };
 } // namespace Str

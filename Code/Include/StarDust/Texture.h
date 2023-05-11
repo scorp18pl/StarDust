@@ -10,7 +10,7 @@ namespace Str
     {
     public:
         explicit Texture(const void* data = nullptr, unsigned int width = 0U, unsigned int height = 0U);
-        Texture(const Texture&); // TODO: Implement copy constructor
+        Texture(const Texture&);
         Texture(Texture&&) = delete;
         ~Texture();
 
@@ -18,6 +18,8 @@ namespace Str
 
         void Bind(unsigned int textureSlot = 0U) const;
         static void Unbind();
+
+        void SetData(const void* data, unsigned int width, unsigned int height);
 
         Texture& operator=(const Texture&);
 

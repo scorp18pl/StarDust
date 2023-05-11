@@ -37,10 +37,7 @@ namespace Str
 
     Texture::~Texture()
     {
-        if (m_id != 0)
-        {
-            GL_CHECK(glDeleteTextures(1, &m_id));
-        }
+        GL_CHECK(glDeleteTextures(1, &m_id));
     }
 
     void Texture::Bind(unsigned int textureSlot) const
@@ -59,21 +56,24 @@ namespace Str
         GL_CHECK(glBindTexture(GL_TEXTURE_2D, 0));
     }
 
-    Texture& Texture::operator=(const Texture& other)
+    void Texture::SetData(
+        const void* data, unsigned int width, unsigned int height)
     {
-        GL_CHECK(glGenTextures(1, &m_id));
-        GL_CHECK(glBindTexture(GL_TEXTURE_2D, m_id));
+        m_data = data;
+        m_width = width;
+        m_height = height;
 
+        Bind();
         GL_CHECK(glTexImage2D(
             GL_TEXTURE_2D,
             0,
             GL_RGBA,
-            other.m_width,
-            other.m_height,
+            width,
+            height,
             0,
             GL_RGBA,
             GL_UNSIGNED_BYTE,
-            other.m_data));
+            data));
         GL_CHECK(
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
         GL_CHECK(
@@ -82,6 +82,17 @@ namespace Str
             GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
         GL_CHECK(glTexParameteri(
             GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+    }
+
+    Texture& Texture::operator=(const Texture& other)
+    {
+        if (this == &other)
+            return *this;
+
+        GL_CHECK(glGenTextures(1, &m_id));
+        Bind();
+
+        SetData(other.m_data, other.m_width, other.m_height);
 
         return *this;
     }

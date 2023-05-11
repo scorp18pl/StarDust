@@ -51,7 +51,8 @@ namespace Str
 
         ImGui::StyleColorsDark();
 
-        Renderer::Get().SetPixelizationResolution(m_width, m_height, m_width, m_height);
+        Renderer::Get().SetPixelizationResolution(
+            m_width, m_height, m_width, m_height);
     }
 
     Window::~Window()
@@ -105,5 +106,16 @@ namespace Str
     void Window::Draw(const ModelInstance& drawable)
     {
         Renderer::Get().AddDrawRequest(drawable);
+    }
+
+    void Window::SetPixelizationFactor(unsigned int factor)
+    {
+        Renderer::Get().SetPixelizationResolution(
+            m_width / factor, m_height / factor, m_width, m_height);
+    }
+
+    GLFWwindow* Window::GetNativeWindow() const
+    {
+        return m_window;
     }
 } // namespace Str
