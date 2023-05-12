@@ -34,7 +34,7 @@ add_library(stardust STATIC
         Code/Source/StarDust/Model/Model.cpp
         Code/Include/StarDust/Model/Model.h
         Code/Source/StarDust/Model/ModelInstance.cpp
-        Code/Include/StarDust/Model/ModelInstance.h Code/Source/StarDust/Buffer/RenderBuffer.cpp Code/Include/StarDust/Buffer/RenderBuffer.h Code/Tests/StarDust/Tests.cpp)
+        Code/Include/StarDust/Model/ModelInstance.h Code/Source/StarDust/Buffer/RenderBuffer.cpp Code/Include/StarDust/Buffer/RenderBuffer.h Code/Tests/StarDust/Tests.cpp Code/Include/StarDust/LightSource.h)
 
 include(Code/3rdParty/CreateTargets.cmake)
 

@@ -103,11 +103,6 @@ namespace Str
         ImGui::NewFrame();
     }
 
-    void Window::Draw(const ModelInstance& drawable)
-    {
-        Renderer::Get().AddDrawRequest(drawable);
-    }
-
     void Window::SetPixelizationFactor(unsigned int factor)
     {
         Renderer::Get().SetPixelizationResolution(

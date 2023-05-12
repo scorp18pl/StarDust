@@ -87,6 +87,8 @@ void InstancingTest::OnUpdate(float deltaTime)
         instance.GetTransform().Translate(
             { m_velocities[&instance - &m_instances[0]] * m_speedMultiplier *
               deltaTime });
+
+        instance.Update();
     }
 
     m_viewMatrix = glm::rotate(
@@ -110,11 +112,6 @@ void InstancingTest::OnRender(Str::Window& window)
     shader.SetUniformMat4f("u_view", m_viewMatrix);
     shader.SetUniformMat4f("u_proj", m_projectionMatrix);
     shader.SetUniform3f("u_viewPosition", 0.0f, 0.0f, 0.0f);
-
-    for (auto& instance : m_instances)
-    {
-        window.Draw(instance);
-    }
 }
 
 void InstancingTest::OnImGuiRender()

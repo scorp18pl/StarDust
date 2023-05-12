@@ -18,12 +18,15 @@ int main()
 
     Uni::Math::Vector3f lightDir = { 0.0f, 0.0f, -1.0f };
     Uni::Math::Vector4f lightColor = { 1.0f, 1.0f, 1.0f, 1.0f };
+    float shininess = 32.0f;
+
     float ambientStrenght = 0.1f;
     float diffuseStrenght = 0.4;
     float specularStrenght = 0.5f;
-    float shininess = 32.0f;
 
-    unsigned int currentColorPalette = 0U;
+    float pointLightConstant = 1.0f;
+    float pointLightLinear = 0.09f;
+    float pointLightQuadratic = 0.032f;
 
     std::vector<Uni::Grpx::ColorPalette> colorPalettes = {
         Uni::Grpx::ColorPalette::LoadFromFile(
@@ -37,6 +40,7 @@ int main()
         Uni::Grpx::ColorPalette::LoadFromFile(
             "../../../../Resources/Palettes/universalis-42.hex"),
     };
+    unsigned int currentColorPalette = colorPalettes.size() - 1;
 
     Str::ShaderProgram& modelInstanceShader =
         Str::ShaderProgramRegistry::Get().GetShaderProgram("model_instance");
@@ -62,27 +66,22 @@ int main()
         {
             ImGui::Indent(4.0f);
 
-
             ImGui::InputFloat("Shininess:", &shininess);
             ImGui::InputFloat("Ambient strenght:", &ambientStrenght);
             ImGui::InputFloat("Diffuse strenght:", &diffuseStrenght);
             ImGui::InputFloat("Specular strenght:", &specularStrenght);
 
-            ImGui::InputFloat3(
-                "Light direction:",
-                static_cast<float*>(static_cast<void*>(&lightDir)));
-
-            ImGui::ColorEdit3(
-                "Light color:",
-                static_cast<float*>(static_cast<void*>(&lightColor)));
+            ImGui::InputFloat("Point light constant:", &pointLightConstant);
+            ImGui::InputFloat("Point light linear:", &pointLightLinear);
+            ImGui::InputFloat("Point light quadratic:", &pointLightQuadratic);
 
             ImGui::Unindent(4.0f);
         }
 
         ImGui::SliderInt("Pixelization factor:", &pixelizationFactor, 1, 8);
-        ImGui::SliderFloat("Distortion factor:", &distortionFactor, 0.0f, 1.0f);
-        ImGui::SliderFloat(
-            "Color shift factor:", &colorShiftFactor, 0.0f, 1.0f);
+        ImGui::InputFloat("Distortion factor:", &distortionFactor);
+        ImGui::InputFloat(
+            "Color shift factor:", &colorShiftFactor);
         ImGui::Checkbox("Enable palette snap", &enablePaletteSnap);
 
         if (enablePaletteSnap)
@@ -124,16 +123,25 @@ int main()
                     currentTest = Test::CreateTest(type);
                 }
                 if (isSelected)
+                {
                     ImGui::SetItemDefaultFocus();
+                }
             }
             ImGui::EndCombo();
         }
+
+        modelInstanceShader.SetUniform1f("u_shininess", shininess);
 
         modelInstanceShader.SetUniform1f("u_ambientStrenght", ambientStrenght);
         modelInstanceShader.SetUniform1f("u_diffuseStrenght", diffuseStrenght);
         modelInstanceShader.SetUniform1f(
             "u_specularStrenght", specularStrenght);
-        modelInstanceShader.SetUniform1f("u_shininess", shininess);
+
+        modelInstanceShader.SetUniform1f(
+            "u_pointLightConstant", pointLightConstant);
+        modelInstanceShader.SetUniform1f("u_pointLightLinear", pointLightLinear);
+        modelInstanceShader.SetUniform1f(
+            "u_pointLightQuadratic", pointLightQuadratic);
 
         modelInstanceShader.SetUniform3f(
             "u_lightDir", lightDir.m_x, lightDir.m_y, lightDir.m_z);

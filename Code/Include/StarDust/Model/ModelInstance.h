@@ -17,15 +17,12 @@ namespace Str
     {
     public:
         ModelInstance(
-            std::string modelName,
-            const Uni::Math::Transform& transform = Uni::Math::Transform(),
-            const Uni::Grpx::Color& color = Uni::Grpx::Color::White);
-        ModelInstance(
             PrimitiveType primitiveType,
             const Uni::Math::Transform& transform = Uni::Math::Transform(),
             const Uni::Grpx::Color& color = Uni::Grpx::Color::White);
-        ModelInstance(ModelInstance&&) noexcept = default;
-        ~ModelInstance() = default;
+        ModelInstance(const ModelInstance&);
+        ModelInstance(ModelInstance&&) noexcept;
+        ~ModelInstance();
 
         [[nodiscard]] const std::string& GetModelName() const;
         [[nodiscard]] PrimitiveType GetPrimitiveType() const;
@@ -36,11 +33,15 @@ namespace Str
         Uni::Grpx::Color& GetColor();
         void SetPrimitiveType(PrimitiveType primitiveType);
 
-        ModelInstance& operator=(const ModelInstance&) = default;
+        void Update();
+
+        ModelInstance& operator=(const ModelInstance&);
 
     private:
+        int m_instanceId{ -1 };
         std::string m_modelName;
-        PrimitiveType m_primitiveType{PrimitiveType::None};
+        PrimitiveType m_primitiveType{ PrimitiveType::None };
+
         Uni::Math::Transform m_transform;
         Uni::Grpx::Color m_color;
     };

@@ -7,6 +7,7 @@ class AxesTest : public Test
 {
 public:
     AxesTest();
+    ~AxesTest() = default;
 
     void OnUpdate(float deltaTime) override;
     void OnRender(Str::Window& window) override;

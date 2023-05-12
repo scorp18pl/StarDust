@@ -22,7 +22,6 @@ namespace Str
 
         void Clear();
         void Update() const;
-        void Draw(const ModelInstance& drawable);
 
         void SetPixelizationFactor(unsigned int factor);
         GLFWwindow* GetNativeWindow() const;

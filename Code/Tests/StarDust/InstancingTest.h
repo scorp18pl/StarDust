@@ -8,6 +8,7 @@ class InstancingTest : public Test
 {
 public:
     InstancingTest();
+    ~InstancingTest() = default;
 
     void OnUpdate(float deltaTime) override;
     void OnRender(Str::Window& window) override;

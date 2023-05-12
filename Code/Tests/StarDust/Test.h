@@ -23,7 +23,7 @@ public:
     explicit Test(TestType type);
     Test(const Test&) = default;
     Test(Test&&) = delete;
-    ~Test() = default;
+    virtual ~Test() = default;
 
     [[nodiscard]] const std::string& GetName() const;
 

@@ -51,6 +51,8 @@ void PrimitiveTest::OnUpdate(float deltaTime)
     m_instance.GetTransform().SetScale(
         Uni::Math::Vector3f::CreateFromFloat(m_scale));
     m_instance.GetColor() = m_color;
+
+    m_instance.Update();
 }
 
 void PrimitiveTest::OnRender(Str::Window& window)
@@ -68,7 +70,6 @@ void PrimitiveTest::OnRender(Str::Window& window)
 
     shader.SetUniformMat4f("u_view", m_viewMatrix);
     shader.SetUniformMat4f("u_proj", m_projectionMatrix);
-    window.Draw(m_instance);
 }
 
 void PrimitiveTest::OnImGuiRender()

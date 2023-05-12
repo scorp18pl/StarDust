@@ -60,6 +60,10 @@ void AxesTest::OnUpdate(float deltaTime)
             m_rotation.m_y, Uni::Math::Axis::Y) *
         Uni::Math::Matrix3x4f::CreateFromRotationRadians(
             m_rotation.m_z, Uni::Math::Axis::Z));
+
+    m_axisX.Update();
+    m_axisY.Update();
+    m_axisZ.Update();
 }
 
 void AxesTest::OnRender(Str::Window& window)
@@ -88,10 +92,6 @@ void AxesTest::OnRender(Str::Window& window)
     shader.Bind();
     shader.SetUniformMat4f("u_view", m_viewMatrix);
     shader.SetUniformMat4f("u_proj", m_projectionMatrix);
-
-    window.Draw(m_axisX);
-    window.Draw(m_axisY);
-    window.Draw(m_axisZ);
 }
 
 void AxesTest::OnImGuiRender()

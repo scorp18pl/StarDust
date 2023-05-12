@@ -45,6 +45,11 @@ void TestScene::OnUpdate(float deltaTime)
             0.001f * deltaTime, Uni::Math::Axis::Y) *
         Uni::Math::Matrix3x4f::CreateFromRotationRadians(
             0.001f * deltaTime, Uni::Math::Axis::Z));
+
+    for (auto& instance : m_instances)
+    {
+        instance.Update();
+    }
 }
 
 void TestScene::OnRender(Str::Window& window)
@@ -77,11 +82,6 @@ void TestScene::OnRender(Str::Window& window)
         m_cameraTranslation.m_x,
         m_cameraTranslation.m_y,
         m_cameraTranslation.m_z);
-
-    for (auto& instance : m_instances)
-    {
-        window.Draw(instance);
-    }
 }
 
 void TestScene::OnImGuiRender()
@@ -220,6 +220,79 @@ void TestScene::OnImGuiRender()
 
             ImGui::Unindent(4.0f);
         }
+    }
+
+    if (ImGui::CollapsingHeader("Point Lights"))
+    {
+        ImGui::Indent(4.0f);
+        ImGui::Text("Point Light count: %d", m_lights.size());
+
+        if (ImGui::BeginCombo(
+                "Select point light",
+                std::string(
+                    std::string("point light: ") +
+                    std::to_string(m_currentLight))
+                    .c_str(),
+                ImGuiComboFlags_None))
+        {
+            for (const auto& pointLight : m_lights)
+            {
+                bool isSelected =
+                    (m_currentLight == &pointLight - &m_lights[0]);
+                if (ImGui::Selectable(
+                        std::string(
+                            std::string("Point Light: ") +
+                            std::to_string(&pointLight - &m_lights[0]))
+                            .c_str(),
+                        isSelected,
+                        ImGuiSelectableFlags_None))
+                {
+                    m_currentLight = &pointLight - &m_lights[0];
+                }
+            }
+
+            if (ImGui::Selectable("Add Point Light"))
+            {
+                m_currentLight = m_lights.size();
+                m_lights.emplace_back(
+                    Str::Renderer::Get().RegisterLightSource(
+                        Str::LightSourceType::Point),
+                    Str::LightSourceType::Point);
+            }
+
+            if (ImGui::Selectable("Add Directional Light"))
+            {
+                m_currentLight = m_lights.size();
+                m_lights.emplace_back(
+                    Str::Renderer::Get().RegisterLightSource(
+                        Str::LightSourceType::Directional),
+                    Str::LightSourceType::Directional);
+            }
+
+            ImGui::EndCombo();
+        }
+
+        if (m_currentLight < m_lights.size())
+        {
+            ImGui::Text("Selected Point Light: %d", m_currentLight);
+            ImGui::Indent(4.0f);
+
+            Str::LightData& pointLight =
+                Str::Renderer::Get().GetLightSourceData(
+                    m_lights[m_currentLight].second,
+                    m_lights[m_currentLight].first);
+
+            ImGui::InputFloat3(
+                (m_lights[m_currentLight].second == Str::LightSourceType::Point
+                     ? "Position"
+                     : "Direction"),
+                reinterpret_cast<float*>(&pointLight.m_vector));
+            ImGui::ColorEdit3(
+                "Light Color", reinterpret_cast<float*>(&pointLight.m_color));
+            ImGui::InputFloat("Intensity", &pointLight.m_intensity);
+
+            ImGui::Unindent(4.0f);
+        }
 
         ImGui::Indent(4.0f);
     }
@@ -274,7 +347,15 @@ void TestScene::HandleCamera(Str::Window& window)
             sensitivity * Uni::Math::Vector3f{ 0.0f, 0.0f, 1.0f };
     }
 
-    if (glfwGetKey(glfwWindow, GLFW_KEY_Q) != GLFW_PRESS)
+    static bool last = false;
+    if (glfwGetKey(glfwWindow, GLFW_KEY_Q) == GLFW_PRESS && last)
+    {
+        m_cameraMode = !m_cameraMode;
+    }
+
+    last = glfwGetKey(glfwWindow, GLFW_KEY_Q) == GLFW_RELEASE;
+
+    if (m_cameraMode)
     {
         glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         double xpos, ypos;
@@ -298,9 +379,14 @@ void TestScene::HandleCamera(Str::Window& window)
         m_cameraPitch -= static_cast<float>(yoffset);
 
         if (m_cameraPitch > 89.0f)
+        {
             m_cameraPitch = 89.0f;
+        }
+
         if (m_cameraPitch < -89.0f)
+        {
             m_cameraPitch = -89.0f;
+        }
     }
     else
     {
