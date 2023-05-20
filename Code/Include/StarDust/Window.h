@@ -6,7 +6,7 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
-namespace Str
+namespace Star
 {
     class Window
     {
@@ -33,4 +33,4 @@ namespace Str
         int m_width, m_height;
     };
 
-} // namespace Str
+} // namespace Star

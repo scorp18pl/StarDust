@@ -2,11 +2,19 @@
 
 #include <StarDust/Model/ModelInstance.h>
 #include <StarDust/Shader/ShaderProgramRegistry.h>
+#include <Universal/Math/Math.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <imgui.h>
 
 AxesTest::AxesTest()
     : Test(TestType::Axes)
+    , m_lightSource(
+          Star::LightSourceType::Directional,
+          Star::LightData{
+              Uni::Math::Vector3f{ 0.0f, 0.0f, -1.0f },
+              Uni::Grpx::Color::White,
+              1.0f,
+          })
 {
     m_axisX.GetColor() = Uni::Grpx::Color::Red;
     m_axisY.GetColor() = Uni::Grpx::Color::Green;
@@ -52,21 +60,12 @@ AxesTest::AxesTest()
 
 void AxesTest::OnUpdate(float deltaTime)
 {
-    m_rootTransform.SetTranslation(m_translation);
-    m_rootTransform.SetRotation(
-        Uni::Math::Matrix3x4f::CreateFromRotationRadians(
-            m_rotation.m_x, Uni::Math::Axis::X) *
-        Uni::Math::Matrix3x4f::CreateFromRotationRadians(
-            m_rotation.m_y, Uni::Math::Axis::Y) *
-        Uni::Math::Matrix3x4f::CreateFromRotationRadians(
-            m_rotation.m_z, Uni::Math::Axis::Z));
-
     m_axisX.Update();
     m_axisY.Update();
     m_axisZ.Update();
 }
 
-void AxesTest::OnRender(Str::Window& window)
+void AxesTest::OnRender(Star::Window& window)
 {
     m_projectionMatrix = glm::ortho(
         -static_cast<float>(window.GetWidth()) / 32.0f,
@@ -87,8 +86,8 @@ void AxesTest::OnRender(Str::Window& window)
         glm::vec3(0, 0, 1) // Head is up (set to 0,-1,0 to look upside-down)
     );
 
-    Str::ShaderProgram& shader =
-        Str::ShaderProgramRegistry::Get().GetShaderProgram("model_instance");
+    Star::ShaderProgram& shader =
+        Star::ShaderProgramRegistry::Get().GetShaderProgram("model_instance");
     shader.Bind();
     shader.SetUniformMat4f("u_view", m_viewMatrix);
     shader.SetUniformMat4f("u_proj", m_projectionMatrix);
@@ -96,15 +95,17 @@ void AxesTest::OnRender(Str::Window& window)
 
 void AxesTest::OnImGuiRender()
 {
+    Uni::Math::Vector3f rotationDegrees =
+        m_rootTransform.GetRotation().GetEulerRadZYX() *
+        (180.0f / Uni::Math::Constants::PI);
+    Uni::Math::Vector3f translation = m_rootTransform.GetTranslation();
+
     ImGui::Text("Coordinate system (X - Red, Y - Green, Z - Blue)");
+    ImGui::SliderFloat3("Rotation (Rad):", rotationDegrees.m_data, 0.0f, 2.0f);
     ImGui::SliderFloat3(
-        "Rotation (Rad):",
-        static_cast<float*>(static_cast<void*>(&m_rotation)),
-        0.0f,
-        2.0f);
-    ImGui::SliderFloat3(
-        "Translation (Meters):",
-        reinterpret_cast<float*>(static_cast<void*>(&m_translation)),
-        -20.0f,
-        20.0f);
+        "Translation (Meters):", translation.m_data, -20.0f, 20.0f);
+
+    m_rootTransform.SetRotation(Uni::Math::Quaternion::CreateFromEulerRadZYX(
+        rotationDegrees * (Uni::Math::Constants::PI / 180.0f)));
+    m_rootTransform.SetTranslation(translation);
 }

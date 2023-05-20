@@ -1,5 +1,6 @@
 #include "InstancingTest.h"
 
+#include <StarDust/Model/MeshRegistry.h>
 #include <StarDust/Model/ModelInstance.h>
 #include <StarDust/Shader/ShaderProgramRegistry.h>
 #include <Universal/Math/Random/Generator.h>
@@ -8,6 +9,13 @@
 
 InstancingTest::InstancingTest()
     : Test(TestType::Instancing)
+    , m_lightSource(
+          Star::LightSourceType::Directional,
+          Star::LightData{
+              Uni::Math::Vector3f{ 0.0f, 0.0f, -1.0f },
+              Uni::Grpx::Color::White,
+              2.0f,
+          })
 {
     Uni::Math::Rand::Generator generator;
     generator.SetRandomSeed();
@@ -15,8 +23,8 @@ InstancingTest::InstancingTest()
     m_instances.reserve(InstanceCount);
     for (size_t i = 0; i < InstanceCount; ++i)
     {
-        const Uni::Math::Vector3f dim = Uni::Math::Vector3f::CreateFromFloat(
-            generator.GenerateInRange(25.0f, 75.0f));
+        const Uni::Math::Vector3f dim =
+            Uni::Math::Vector3f{ generator.GenerateInRange(25.0f, 75.0f) };
 
         Uni::Math::Transform transform;
         transform.SetScale(dim);
@@ -27,7 +35,7 @@ InstancingTest::InstancingTest()
         });
 
         m_instances.emplace_back(
-            Str::PrimitiveType::Icosahedron,
+            Star::MeshRegistry::Get().GetMeshId("Icosahedron"),
             transform,
             Uni::Grpx::Color::CreateFromVector3f(
                 Uni::Math::Vector3f::CreateRandomUnitVector(generator) * 2.0f,
@@ -52,15 +60,14 @@ InstancingTest::InstancingTest()
 
 void InstancingTest::OnUpdate(float deltaTime)
 {
+    static const Uni::Math::Vector3f RotationAxis =
+        Uni::Math::Vector3f{ 1.0f, 2.0f, 3.0f }.GetNormalized();
+
     for (auto& instance : m_instances)
     {
-        Uni::Math::Matrix3x4f rotation =
-            Uni::Math::Matrix3x4f::CreateFromRotationRadians(
-                m_rotSpeed * 0.001f * deltaTime, Uni::Math::Axis::X) *
-            Uni::Math::Matrix3x4f::CreateFromRotationRadians(
-                m_rotSpeed * 0.002f * deltaTime, Uni::Math::Axis::Y) *
-            Uni::Math::Matrix3x4f::CreateFromRotationRadians(
-                m_rotSpeed * 0.003f * deltaTime, Uni::Math::Axis::Z);
+        Uni::Math::Quaternion rotation =
+            Uni::Math::Quaternion::CreateFromAxisRad(
+                m_rotSpeed * 0.001f * deltaTime, RotationAxis);
 
         const Uni::Math::Vector3f currentTranslation =
             instance.GetTransform().GetTranslation();
@@ -97,7 +104,7 @@ void InstancingTest::OnUpdate(float deltaTime)
         glm::vec3(1.0f, 2.0f, 3.0f));
 }
 
-void InstancingTest::OnRender(Str::Window& window)
+void InstancingTest::OnRender(Star::Window& window)
 {
     m_projectionMatrix = glm::perspective(
         glm::radians(m_fieldOfView),
@@ -106,8 +113,8 @@ void InstancingTest::OnRender(Str::Window& window)
         0.1f,
         10000.0f);
 
-    Str::ShaderProgram& shader =
-        Str::ShaderProgramRegistry::Get().GetShaderProgram("model_instance");
+    Star::ShaderProgram& shader =
+        Star::ShaderProgramRegistry::Get().GetShaderProgram("model_instance");
     shader.Bind();
     shader.SetUniformMat4f("u_view", m_viewMatrix);
     shader.SetUniformMat4f("u_proj", m_projectionMatrix);

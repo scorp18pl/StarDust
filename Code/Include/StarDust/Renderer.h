@@ -8,7 +8,7 @@
 #include <StarDust/Texture.h>
 #include <unordered_map>
 
-namespace Str
+namespace Star
 {
     enum class PostProcFlag : uint8_t
     {
@@ -20,10 +20,6 @@ namespace Str
     {
     public:
         static Renderer& Get();
-
-        int RegisterModelInstance(PrimitiveType type);
-        void UnregisterModelInstance(PrimitiveType type, int instanceId);
-        InstanceData& GetInstanceData(PrimitiveType type, int instanceId);
 
         int RegisterLightSource(LightSourceType type);
         void UnregisterLightSource(LightSourceType type, int pointLightId);
@@ -39,11 +35,6 @@ namespace Str
             unsigned int windowHeight);
 
     private:
-        struct InstanceSystem
-        {
-            std::unordered_map<int, InstanceData> m_idToDataMap;
-            std::vector<int> m_freeIds;
-        };
 
         struct PointLightSystem
         {
@@ -51,10 +42,7 @@ namespace Str
             std::vector<int> m_freeIds;
         };
 
-        std::unordered_map<PrimitiveType, InstanceSystem> m_modelInstances;
         std::unordered_map<LightSourceType, PointLightSystem> m_lightSources;
-
-        std::vector<InstanceData> m_renderData;
 
         PostProcFlag m_postProcFlags = PostProcFlag::None;
 
@@ -73,4 +61,4 @@ namespace Str
         void UpdatePointLightUniforms(
             ShaderProgram& shader, LightSourceType type);
     };
-} // namespace Str
+} // namespace Star

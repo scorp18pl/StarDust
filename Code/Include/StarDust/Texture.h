@@ -4,7 +4,7 @@
 #include <string>
 #include <glad/glad.h>
 
-namespace Str
+namespace Star
 {
     class Texture
     {
@@ -28,4 +28,4 @@ namespace Str
         const void* m_data;
         unsigned int m_width, m_height;
     };
-} // namespace Str
+} // namespace Star

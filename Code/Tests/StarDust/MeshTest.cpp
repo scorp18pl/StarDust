@@ -1,18 +1,26 @@
+#include <StarDust/Model/MeshRegistry.h>
 #include <StarDust/Shader/ShaderProgram.h>
 #include <StarDust/Shader/ShaderProgramRegistry.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <imgui.h>
 
-#include "PrimitiveTest.h"
+#include "MeshTest.h"
 
-PrimitiveTest::PrimitiveTest()
-    : Test(Test::TestType::Primitive)
+MeshTest::MeshTest()
+    : Test(Test::TestType::Mesh)
+    , m_lightSource(
+          Star::LightSourceType::Directional,
+          Star::LightData{
+              Uni::Math::Vector3f{ 0.0f, 0.0f, -1.0f },
+              Uni::Grpx::Color::White,
+              2.0f,
+          })
 {
-    m_instance = Str::ModelInstance(
-        m_currentPrimitive,
+    m_instance = Star::ModelInstance(
+        m_currentMeshId,
         Uni::Math::Transform(),
         Uni::Grpx::Color::CreateFromVector3f(
-            Uni::Math::Vector3f::CreateFromFloat(1.0f), 1.0f));
+            Uni::Math::Vector3f{ 1.0f }, 1.0f));
 
     m_viewMatrix = glm::lookAt(
         glm::vec3(
@@ -27,35 +35,29 @@ PrimitiveTest::PrimitiveTest()
     );
 }
 
-void PrimitiveTest::OnUpdate(float deltaTime)
+void MeshTest::OnUpdate(float deltaTime)
 {
     m_instance.GetTransform().SetTranslation(m_translation);
     if (m_rotationEnabled)
     {
         m_instance.GetTransform().Rotate(
-            Uni::Math::Matrix3x4f::CreateFromRotationRadians(
+            Uni::Math::Quaternion::CreateFromAxisRad(
                 m_rotSpeed * m_speedMultiplier * deltaTime,
-                Uni::Math::Axis::Z));
+                Uni::Math::Vector3f::CreateAxisZ()));
     }
     else
     {
         m_instance.GetTransform().SetRotation(
-            Uni::Math::Matrix3x4f::CreateFromRotationDegrees(
-                m_rotation.m_x, Uni::Math::Axis::X) *
-            Uni::Math::Matrix3x4f::CreateFromRotationDegrees(
-                m_rotation.m_y, Uni::Math::Axis::Y) *
-            Uni::Math::Matrix3x4f::CreateFromRotationDegrees(
-                m_rotation.m_z, Uni::Math::Axis::Z));
+            Uni::Math::Quaternion::CreateFromEulerDegZYX(m_rotation));
     }
 
-    m_instance.GetTransform().SetScale(
-        Uni::Math::Vector3f::CreateFromFloat(m_scale));
+    m_instance.GetTransform().SetScale(Uni::Math::Vector3f{ m_scale });
     m_instance.GetColor() = m_color;
 
     m_instance.Update();
 }
 
-void PrimitiveTest::OnRender(Str::Window& window)
+void MeshTest::OnRender(Star::Window& window)
 {
     m_projectionMatrix = glm::perspective(
         glm::radians(90.0f),
@@ -64,42 +66,33 @@ void PrimitiveTest::OnRender(Str::Window& window)
         0.1f,
         100.0f);
 
-    Str::ShaderProgram& shader =
-        Str::ShaderProgramRegistry::Get().GetShaderProgram("model_instance");
+    Star::ShaderProgram& shader =
+        Star::ShaderProgramRegistry::Get().GetShaderProgram("model_instance");
     shader.Bind();
 
     shader.SetUniformMat4f("u_view", m_viewMatrix);
     shader.SetUniformMat4f("u_proj", m_projectionMatrix);
 }
 
-void PrimitiveTest::OnImGuiRender()
+void MeshTest::OnImGuiRender()
 {
-    static const std::array<std::pair<std::string, Str::PrimitiveType>, 4>
-        Primitives = {
-            std::make_pair("Triangle", Str::PrimitiveType::Triangle),
-            std::make_pair("Rectangle", Str::PrimitiveType::Rectangle),
-            std::make_pair("Box", Str::PrimitiveType::Box),
-            std::make_pair("Icosahedron", Str::PrimitiveType::Icosahedron),
-        };
-
     if (ImGui::BeginCombo(
             "PrimitiveType", m_currentName.c_str(), ImGuiComboFlags_None))
     {
-        for (const auto& primitive : Primitives)
+        for (const auto& [meshId, mesh] :
+             Star::MeshRegistry::Get().GetRegisteredMeshes())
         {
-            bool isSelected = (m_currentName == primitive.first);
+            bool isSelected = (m_currentName == mesh.m_name);
             if (ImGui::Selectable(
-                    primitive.first.c_str(),
-                    isSelected,
-                    ImGuiSelectableFlags_None))
+                    mesh.m_name.c_str(), isSelected, ImGuiSelectableFlags_None))
             {
-                m_currentName = primitive.first;
-                m_currentPrimitive = primitive.second;
-                m_instance = Str::ModelInstance(
-                    m_currentPrimitive,
+                m_currentName = mesh.m_name;
+                m_currentMeshId = meshId;
+                m_instance = Star::ModelInstance(
+                    m_currentMeshId,
                     Uni::Math::Transform(),
                     Uni::Grpx::Color::CreateFromVector3f(
-                        Uni::Math::Vector3f::CreateFromFloat(1.0f), 1.0f));
+                        Uni::Math::Vector3f{ 1.0f }, 1.0f));
             }
         }
         ImGui::EndCombo();

@@ -1,55 +1,16 @@
-#include <StarDust/Model/Mesh.h>
-#include <StarDust/Model/ModelRegistry.h>
 #include <StarDust/Renderer.h>
 #include <StarDust/Shader/ShaderProgramRegistry.h>
+#include <StarDust/Model/ModelInstanceSystem.h>
 #include <StarDust/Utils.h>
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_opengl3.h>
 
-namespace Str
+namespace Star
 {
     Renderer& Renderer::Get()
     {
         static Renderer renderer;
         return renderer;
-    }
-
-    int Renderer::RegisterModelInstance(PrimitiveType type)
-    {
-        if (type == PrimitiveType::None)
-        {
-            return -1;
-        }
-
-        int id;
-        if (!m_modelInstances[type].m_freeIds.empty())
-        {
-            id = m_modelInstances[type].m_freeIds.back();
-            m_modelInstances[type].m_freeIds.pop_back();
-        }
-        else
-        {
-            id = static_cast<int>(m_modelInstances[type].m_idToDataMap.size());
-            m_modelInstances[type].m_idToDataMap.emplace(id, InstanceData());
-        }
-
-        return id;
-    }
-
-    void Renderer::UnregisterModelInstance(PrimitiveType type, int instanceId)
-    {
-        if (type == PrimitiveType::None)
-        {
-            return;
-        }
-
-        m_modelInstances[type].m_freeIds.push_back(instanceId);
-        m_modelInstances[type].m_idToDataMap.erase(instanceId);
-    }
-
-    InstanceData& Renderer::GetInstanceData(PrimitiveType type, int instanceId)
-    {
-        return m_modelInstances[type].m_idToDataMap[instanceId];
     }
 
     int Renderer::RegisterLightSource(LightSourceType type)
@@ -96,29 +57,8 @@ namespace Str
         UpdatePointLightUniforms(instanceShader, LightSourceType::Point);
         UpdatePointLightUniforms(instanceShader, LightSourceType::Directional);
 
-        for (auto& primitive : m_modelInstances)
-        {
-            PrimitiveType type = primitive.first;
-            std::unordered_map<int, InstanceData>& instances =
-                primitive.second.m_idToDataMap;
-            m_renderData.reserve(instances.size());
-            m_renderData.clear();
-
-            if (instances.empty())
-            {
-                continue;
-            }
-
-            for (auto& instance : instances)
-            {
-                m_renderData.push_back(instance.second);
-            }
-
-            Model& model = ModelRegistry::Get().GetPrimitiveModel(type);
-            model.RenderInstances(m_renderData);
-        }
-
-        Str::FrameBuffer::Unbind();
+        ModelInstanceSystem::Get().Render();
+        FrameBuffer::Unbind();
 
         GL_CHECK(glViewport(0, 0, m_windowWidth, m_windowHeight));
 
@@ -128,7 +68,7 @@ namespace Str
         postProcShader.SetUniform1i("screenTexture", 0);
         GL_CHECK(glDisable(GL_DEPTH_TEST));
         m_pixelizationTexture.Bind();
-        m_frameBuffer.Draw();
+        FrameBuffer::Draw();
     }
 
     void Renderer::SetPostprocessingFlags(PostProcFlag flags)
@@ -180,8 +120,7 @@ namespace Str
         int i = 0;
         for (auto& pointLight : m_lightSources[type].m_idToDataMap)
         {
-            std::string prefix =
-                std::string("u_" + lightTypeStr + "Lights[") +
+            std::string prefix = std::string("u_" + lightTypeStr + "Lights[") +
                 std::to_string(i) + "].";
             shader.SetUniform3f(
                 (prefix + "vector").c_str(),
@@ -199,4 +138,4 @@ namespace Str
             ++i;
         }
     }
-} // namespace Str
+} // namespace Star

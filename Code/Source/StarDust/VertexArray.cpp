@@ -1,16 +1,25 @@
 #include <StarDust/Utils.h>
 #include <StarDust/VertexArray.h>
 
-namespace Str
+namespace Star
 {
     VertexArray::VertexArray()
     {
         GL_CHECK(glGenVertexArrays(1, &m_id));
     }
 
+    VertexArray::VertexArray(VertexArray&& other) noexcept
+        : m_id(other.m_id)
+    {
+        other.m_id = 0;
+    }
+
     VertexArray::~VertexArray()
     {
-        GL_CHECK(glDeleteVertexArrays(1, &m_id));
+        if (m_id != 0)
+        {
+            GL_CHECK(glDeleteVertexArrays(1, &m_id));
+        }
     }
 
     void VertexArray::Bind() const
@@ -52,4 +61,4 @@ namespace Str
         }
 
     }
-} // namespace Str
+} // namespace Star

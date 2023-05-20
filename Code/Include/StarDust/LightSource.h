@@ -3,7 +3,7 @@
 #include <Universal/Graphics/Color.h>
 #include <Universal/Math/Vector/Vector3f.h>
 
-namespace Str
+namespace Star
 {
     enum class LightSourceType
     {
@@ -18,4 +18,27 @@ namespace Str
         Uni::Grpx::Color m_color{ 1.0f, 1.0f, 1.0f, 1.0f };
         float m_intensity{ 1.0f };
     };
-} // namespace Str
+
+    class LightSource
+    {
+        using IdType = int;
+        static constexpr IdType InvalidId = -1;
+
+    public:
+        explicit LightSource(LightSourceType type, LightData lightData = {});
+        ~LightSource();
+
+        [[nodiscard]] LightSourceType GetType() const;
+        [[nodiscard]] const LightData& GetData() const;
+
+        void UpdateType(LightSourceType type);
+        LightData& GetData();
+
+        void Update();
+
+    private:
+        IdType m_id{ InvalidId };
+        LightSourceType m_type;
+        LightData m_data;
+    };
+} // namespace Star

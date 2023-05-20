@@ -1,7 +1,7 @@
 #include <StarDust/Buffer/RenderBuffer.h>
 #include <StarDust/Utils.h>
 
-namespace Str
+namespace Star
 {
     RenderBuffer::RenderBuffer()
     {
@@ -34,4 +34,4 @@ namespace Str
     {
         GL_CHECK(glDeleteRenderbuffers(1, &m_id));
     }
-} // namespace Str
+} // namespace Star

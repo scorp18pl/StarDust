@@ -1,6 +1,6 @@
 #include <StarDust/Shader/ShaderProgramRegistry.h>
 
-namespace Str
+namespace Star
 {
     ShaderProgramRegistry& ShaderProgramRegistry::Get()
     {
@@ -38,4 +38,4 @@ namespace Str
             Register(shaderPath.data(), shaderName.data());
         }
     }
-} // namespace Str
+} // namespace Star

@@ -1,24 +1,23 @@
 #include <StarDust/Model/ModelInstance.h>
-#include <StarDust/Renderer.h>
+#include <StarDust/Model/ModelInstanceSystem.h>
 
-#include <utility>
-
-namespace Str
+namespace Star
 {
     ModelInstance::ModelInstance(
-        PrimitiveType primitiveType,
+        Mesh::IdType meshId,
         const Uni::Math::Transform& transform,
         const Uni::Grpx::Color& color)
-        : m_instanceId{ Renderer::Get().RegisterModelInstance(primitiveType) }
-        , m_primitiveType{ primitiveType }
+        : m_instanceId{ ModelInstanceSystem::Get().RegisterModelInstance(
+              meshId) }
+        , m_meshId{ meshId }
         , m_transform{ transform }
         , m_color{ color }
     {
-        InstanceData& instanceData =
-            Renderer::Get().GetInstanceData(primitiveType, m_instanceId);
+        ModelInstanceData& instanceData =
+            ModelInstanceSystem::Get().GetInstanceData(m_instanceId);
 
         instanceData.m_transform = m_transform.GetMatrix();
-        instanceData.m_normalTransform = m_transform.GetRotation();
+        instanceData.m_normalTransform = m_transform.GetRotation().GetMatrix();
         instanceData.m_color = m_color;
     }
 
@@ -29,36 +28,24 @@ namespace Str
 
     ModelInstance::ModelInstance(ModelInstance&& other) noexcept
         : m_instanceId{ other.m_instanceId }
-        , m_modelName{ std::move(other.m_modelName) }
-        , m_primitiveType{ std::exchange(other.m_primitiveType, PrimitiveType::None) }
+        , m_meshId{ other.m_meshId }
         , m_transform{ other.m_transform }
         , m_color{ other.m_color }
     {
+        other.m_instanceId = ModelInstance::InvalidId;
     }
 
     ModelInstance::~ModelInstance()
     {
-        Renderer::Get().UnregisterModelInstance(m_primitiveType, m_instanceId);
+        if (m_instanceId != ModelInstance::InvalidId)
+        {
+            ModelInstanceSystem::Get().UnregisterModelInstance(m_instanceId);
+        }
     }
 
-    ModelInstance& ModelInstance::operator=(const ModelInstance& other)
+    Mesh::IdType ModelInstance::GetMeshId() const
     {
-        m_primitiveType = other.m_primitiveType;
-        m_transform = other.m_transform;
-        m_color = other.m_color;
-        m_instanceId = Renderer::Get().RegisterModelInstance(m_primitiveType);
-
-        return *this;
-    }
-
-    const std::string& ModelInstance::GetModelName() const
-    {
-        return m_modelName;
-    }
-
-    PrimitiveType ModelInstance::GetPrimitiveType() const
-    {
-        return m_primitiveType;
+        return m_meshId;
     }
 
     const Uni::Math::Transform& ModelInstance::GetTransform() const
@@ -81,18 +68,37 @@ namespace Str
         return m_color;
     }
 
-    void ModelInstance::SetPrimitiveType(PrimitiveType primitiveType)
+    void ModelInstance::SetMeshId(Mesh::IdType meshId)
     {
-        m_primitiveType = primitiveType;
+        m_meshId = meshId;
+        ModelInstanceSystem::Get().UpdateModelInstanceMeshId(
+            m_instanceId, m_meshId);
     }
 
     void ModelInstance::Update()
     {
-        InstanceData& instanceData =
-            Renderer::Get().GetInstanceData(m_primitiveType, m_instanceId);
+        ModelInstanceData& instanceData =
+            ModelInstanceSystem::Get().GetInstanceData(m_instanceId);
 
         instanceData.m_transform = m_transform.GetMatrix();
-        instanceData.m_normalTransform = m_transform.GetRotation();
+        instanceData.m_normalTransform = m_transform.GetRotation().GetMatrix();
         instanceData.m_color = m_color;
     }
-} // namespace Str
+
+    ModelInstance& ModelInstance::operator=(const ModelInstance& other)
+    {
+        if (this == &other)
+        {
+            return *this;
+        }
+
+        m_meshId = other.m_meshId;
+        ModelInstanceSystem::Get().UpdateModelInstanceMeshId(
+            m_instanceId, m_meshId);
+
+        m_transform = other.m_transform;
+        m_color = other.m_color;
+
+        return *this;
+    }
+} // namespace Star

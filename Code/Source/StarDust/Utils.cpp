@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 
-namespace Str
+namespace Star
 {
     void Utils::GlCheckError(const char* file, int line)
     {
@@ -55,4 +55,14 @@ namespace Str
         }
         return 0;
     }
-} // namespace Str
+
+    std::filesystem::path Utils::GetResourcesPath()
+    {
+        std::filesystem::path currentFilePath{ __FILE__ };
+        std::filesystem::path currentDirectoryPath =
+            currentFilePath.parent_path();
+
+        return currentDirectoryPath.parent_path().parent_path().parent_path() /
+            "Resources";
+    }
+} // namespace Star

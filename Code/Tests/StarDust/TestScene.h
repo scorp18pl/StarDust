@@ -1,7 +1,7 @@
 #include "Test.h"
+#include <StarDust/LightSource.h>
 #include <glm/mat4x4.hpp>
 #include <vector>
-#include <StarDust/LightSource.h>
 
 class TestScene : public Test
 {
@@ -10,14 +10,14 @@ public:
     ~TestScene() = default;
 
     void OnUpdate(float deltaTime) override;
-    void OnRender(Str::Window& window) override;
+    void OnRender(Star::Window& window) override;
     void OnImGuiRender() override;
 
 private:
-    std::vector<Str::ModelInstance> m_instances;
+    std::vector<Star::ModelInstance> m_instances;
     unsigned int m_currentInstance = 0U;
 
-    std::vector<std::pair<int, Str::LightSourceType>> m_lights;
+    std::vector<std::pair<int, Star::LightSourceType>> m_lights;
     unsigned int m_currentLight = 0U;
 
     glm::mat4 m_viewMatrix;
@@ -31,7 +31,9 @@ private:
     bool m_Perspective = true;
     float m_fieldOfView = 45.0f;
     float m_aspectRatio = 1.0f;
+    Uni::Math::Vector3f m_orthoSize = Uni::Math::Vector3f{ 100.0f };
+
     glm::mat4 m_projectionMatrix;
 
-    void HandleCamera(Str::Window& window);
+    void HandleCamera(Star::Window& window);
 };

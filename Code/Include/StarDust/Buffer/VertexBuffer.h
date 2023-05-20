@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Str
+namespace Star
 {
     class VertexBuffer
     {
@@ -8,7 +8,7 @@ namespace Str
         VertexBuffer();
         VertexBuffer(const void* data, unsigned int size, bool isStatic = false);
         VertexBuffer(const VertexBuffer& other) = delete;
-        VertexBuffer(VertexBuffer&&) = delete;
+        VertexBuffer(VertexBuffer&&) noexcept ;
         ~VertexBuffer();
 
         void Bind() const;
@@ -21,4 +21,4 @@ namespace Str
     private:
         unsigned int m_id;
     };
-} // namespace Str
+} // namespace Star

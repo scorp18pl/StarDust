@@ -2,7 +2,7 @@
 #include <StarDust/Utils.h>
 #include <glad/glad.h>
 
-namespace Str
+namespace Star
 {
     IndexBuffer::IndexBuffer()
     {
@@ -15,9 +15,20 @@ namespace Str
         SetData(data, count);
     }
 
+    IndexBuffer::IndexBuffer(IndexBuffer&& other) noexcept
+        : m_id(other.m_id)
+        , m_count(other.m_count)
+    {
+        other.m_id = 0;
+        other.m_count = 0;
+    }
+
     IndexBuffer::~IndexBuffer()
     {
-        GL_CHECK(glDeleteBuffers(1, &m_id));
+        if (m_id != 0)
+        {
+            GL_CHECK(glDeleteBuffers(1, &m_id));
+        }
     }
 
     void IndexBuffer::Bind() const
@@ -45,4 +56,4 @@ namespace Str
             data,
             GL_STATIC_DRAW));
     }
-} // namespace Str
+} // namespace Star

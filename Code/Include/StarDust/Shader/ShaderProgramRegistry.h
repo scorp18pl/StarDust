@@ -4,7 +4,7 @@
 #include <string>
 #include <unordered_map>
 
-namespace Str
+namespace Star
 {
     class ShaderProgramRegistry
     {
@@ -25,4 +25,4 @@ namespace Str
         std::unordered_map<std::string, ShaderProgram>
             m_registeredShaders;
     };
-} // namespace Str
+} // namespace Star

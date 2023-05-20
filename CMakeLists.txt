@@ -28,13 +28,21 @@ add_library(stardust STATIC
         Code/Include/StarDust/Renderer.h
         Code/Source/StarDust/Shader/ShaderProgramRegistry.cpp
         Code/Include/StarDust/Shader/ShaderProgramRegistry.h
-        Code/Source/StarDust/Model/ModelRegistry.cpp
-        Code/Include/StarDust/Model/ModelRegistry.h
+        Code/Source/StarDust/Model/MeshRegistry.cpp
+        Code/Include/StarDust/Model/MeshRegistry.h
+        Code/Source/StarDust/Model/Mesh.cpp
         Code/Include/StarDust/Model/Mesh.h
         Code/Source/StarDust/Model/Model.cpp
         Code/Include/StarDust/Model/Model.h
         Code/Source/StarDust/Model/ModelInstance.cpp
-        Code/Include/StarDust/Model/ModelInstance.h Code/Source/StarDust/Buffer/RenderBuffer.cpp Code/Include/StarDust/Buffer/RenderBuffer.h Code/Tests/StarDust/Tests.cpp Code/Include/StarDust/LightSource.h)
+        Code/Include/StarDust/Model/ModelInstance.h
+        Code/Source/StarDust/Buffer/RenderBuffer.cpp
+        Code/Include/StarDust/Buffer/RenderBuffer.h
+        Code/Tests/StarDust/Tests.cpp
+        Code/Include/StarDust/LightSource.h
+        Code/Source/StarDust/Model/ModelInstanceSystem.cpp
+        Code/Include/StarDust/Model/ModelInstanceSystem.h
+        Code/Source/StarDust/LightSource.cpp)
 
 include(Code/3rdParty/CreateTargets.cmake)
 

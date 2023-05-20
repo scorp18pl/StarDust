@@ -4,7 +4,7 @@
 #include <StarDust/Texture.h>
 #include <glad/glad.h>
 
-namespace Str
+namespace Star
 {
     class FrameBuffer
     {
@@ -28,4 +28,4 @@ namespace Str
     private:
         unsigned int m_id;
     };
-} // namespace Str
+} // namespace Star

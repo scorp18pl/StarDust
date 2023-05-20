@@ -11,9 +11,8 @@ public:
     {
         Axes,
         Instancing,
-        Primitive,
+        Mesh,
         Scene,
-        Stress,
     };
 
     static const std::map<TestType, std::string> TestTypeMap;
@@ -28,7 +27,7 @@ public:
     [[nodiscard]] const std::string& GetName() const;
 
     virtual void OnUpdate(float deltaTime){};
-    virtual void OnRender(Str::Window& window){};
+    virtual void OnRender(Star::Window& window){};
     virtual void OnImGuiRender(){};
 
     Test& operator=(const Test&) = default;

@@ -1,5 +1,4 @@
-#include "AxesTest.h"
-#include "InstancingTest.h"
+#include "Test.h"
 #include <StarDust/Shader/ShaderProgramRegistry.h>
 #include <StarDust/Window.h>
 #include <Universal/Graphics/ColorPalette.h>
@@ -8,7 +7,7 @@
 
 int main()
 {
-    Str::Window window = Str::Window(1080, 1080, "StarDust Tests");
+    Star::Window window = Star::Window(1080, 1080, "StarDust Tests");
 
     Test* currentTest = nullptr;
     int pixelizationFactor = 4;
@@ -42,8 +41,8 @@ int main()
     };
     unsigned int currentColorPalette = colorPalettes.size() - 1;
 
-    Str::ShaderProgram& modelInstanceShader =
-        Str::ShaderProgramRegistry::Get().GetShaderProgram("model_instance");
+    Star::ShaderProgram& modelInstanceShader =
+        Star::ShaderProgramRegistry::Get().GetShaderProgram("model_instance");
 
     Uni::Sys::Clock clock;
 
@@ -52,11 +51,11 @@ int main()
         window.Update();
         window.SetPixelizationFactor(pixelizationFactor);
 
-        Str::ShaderProgramRegistry::Get()
+        Star::ShaderProgramRegistry::Get()
             .GetShaderProgram("pixelate")
             .SetUniform1f("distortionFactor", distortionFactor);
 
-        Str::ShaderProgramRegistry::Get()
+        Star::ShaderProgramRegistry::Get()
             .GetShaderProgram("pixelate")
             .SetUniform1f("colorShiftFactor", colorShiftFactor);
 
@@ -97,7 +96,7 @@ int main()
                 colorPalettes.size() - 1);
         }
 
-        Str::ShaderProgramRegistry::Get()
+        Star::ShaderProgramRegistry::Get()
             .GetShaderProgram("model_instance")
             .SetUniform1i(
                 "u_colorPaletteCount",

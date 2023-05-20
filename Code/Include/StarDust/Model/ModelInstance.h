@@ -1,12 +1,12 @@
 #pragma once
 
-#include <StarDust/Model/Mesh.h>
+#include <StarDust/Model/Model.h>
 #include <Universal/Math/Transform.h>
 #include <string>
 
-namespace Str
+namespace Star
 {
-    struct InstanceData
+    struct ModelInstanceData
     {
         Uni::Math::Matrix3x4f m_transform;
         Uni::Math::Matrix3x4f m_normalTransform;
@@ -16,22 +16,25 @@ namespace Str
     class ModelInstance
     {
     public:
+        using IdType = int;
+
+        static constexpr IdType InvalidId = -1;
+
         ModelInstance(
-            PrimitiveType primitiveType,
+            Mesh::IdType meshId,
             const Uni::Math::Transform& transform = Uni::Math::Transform(),
             const Uni::Grpx::Color& color = Uni::Grpx::Color::White);
         ModelInstance(const ModelInstance&);
         ModelInstance(ModelInstance&&) noexcept;
         ~ModelInstance();
 
-        [[nodiscard]] const std::string& GetModelName() const;
-        [[nodiscard]] PrimitiveType GetPrimitiveType() const;
+        [[nodiscard]] Mesh::IdType GetMeshId() const;
         [[nodiscard]] const Uni::Math::Transform& GetTransform() const;
         [[nodiscard]] const Uni::Grpx::Color& GetColor() const;
 
         Uni::Math::Transform& GetTransform();
         Uni::Grpx::Color& GetColor();
-        void SetPrimitiveType(PrimitiveType primitiveType);
+        void SetMeshId(Mesh::IdType meshId);
 
         void Update();
 
@@ -39,10 +42,9 @@ namespace Str
 
     private:
         int m_instanceId{ -1 };
-        std::string m_modelName;
-        PrimitiveType m_primitiveType{ PrimitiveType::None };
+        Mesh::IdType m_meshId{ -1 };
 
         Uni::Math::Transform m_transform;
         Uni::Grpx::Color m_color;
     };
-} // namespace Str
+} // namespace Star

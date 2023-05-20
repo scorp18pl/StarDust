@@ -2,7 +2,7 @@
 #include <StarDust/Utils.h>
 #include <glad/glad.h>
 
-namespace Str
+namespace Star
 {
     Texture::Texture(const void* data, unsigned int width, unsigned int height)
         : m_data(data), m_width(width), m_height(height)
@@ -96,4 +96,4 @@ namespace Str
 
         return *this;
     }
-} // namespace Str
+} // namespace Star

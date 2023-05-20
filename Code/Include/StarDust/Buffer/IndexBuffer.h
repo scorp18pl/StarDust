@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Str
+namespace Star
 {
     class IndexBuffer
     {
@@ -9,7 +9,7 @@ namespace Str
         IndexBuffer();
         IndexBuffer(const unsigned int* data, unsigned int count);
         IndexBuffer(const IndexBuffer&) = delete;
-        IndexBuffer(IndexBuffer&&) = delete;
+        IndexBuffer(IndexBuffer&&) noexcept;
         ~IndexBuffer();
 
         void Bind() const;
@@ -24,4 +24,4 @@ namespace Str
         unsigned int m_id;
         unsigned int m_count{ 0U };
     };
-} // namespace Str
+} // namespace Star

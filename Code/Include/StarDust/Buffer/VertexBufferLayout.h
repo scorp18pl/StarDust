@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 #include <vector>
 
-namespace Str
+namespace Star
 {
     struct VertexBufferElement
     {
@@ -33,4 +33,4 @@ namespace Str
         std::vector<VertexBufferElement> m_elements;
         unsigned int m_stride;
     };
-} // namespace Str
+} // namespace Star

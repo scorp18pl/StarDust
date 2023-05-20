@@ -6,7 +6,7 @@
 #include <sstream>
 #include <string>
 
-namespace Str
+namespace Star
 {
     ShaderProgram::ShaderProgram(
         const std::string& vertexPath, const std::string& fragmentPath)
@@ -194,4 +194,4 @@ namespace Str
         m_uniformLocationCache[name] = location;
         return location;
     }
-} // namespace Str
+} // namespace Star

@@ -6,7 +6,7 @@
 #include <imgui/imgui_impl_opengl3.h>
 #include <stdexcept>
 
-namespace Str
+namespace Star
 {
     Window::Window(int width, int height, const char* title)
         : m_width{ width }
@@ -113,4 +113,4 @@ namespace Str
     {
         return m_window;
     }
-} // namespace Str
+} // namespace Star

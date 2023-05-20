@@ -2,7 +2,7 @@
 #include <StarDust/Utils.h>
 #include <glad/glad.h>
 
-namespace Str
+namespace Star
 {
     VertexBuffer::VertexBuffer()
     {
@@ -16,9 +16,18 @@ namespace Str
         SetData(data, size, isStatic);
     }
 
+    VertexBuffer::VertexBuffer(VertexBuffer&& other) noexcept
+        : m_id(other.m_id)
+    {
+        other.m_id = 0;
+    }
+
     VertexBuffer::~VertexBuffer()
     {
-        GL_CHECK(glDeleteBuffers(1, &m_id));
+        if (m_id != 0)
+        {
+            GL_CHECK(glDeleteBuffers(1, &m_id));
+        }
     }
 
     void VertexBuffer::Bind() const
@@ -41,4 +50,4 @@ namespace Str
             data,
             isStatic ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW));
     }
-} // namespace Str
+} // namespace Star

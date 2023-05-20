@@ -5,7 +5,7 @@
 #include <string>
 #include <unordered_map>
 
-namespace Str
+namespace Star
 {
     class ShaderProgram
     {
@@ -52,4 +52,4 @@ namespace Str
         std::unordered_map<std::string, int> m_uniformLocationCache;
         unsigned int m_id;
     };
-} // namespace Str
+} // namespace Star

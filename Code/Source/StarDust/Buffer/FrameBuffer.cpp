@@ -8,7 +8,7 @@
 #include <StarDust/VertexArray.h>
 #include <stdexcept>
 
-namespace Str
+namespace Star
 {
     FrameBuffer::FrameBuffer()
     {
@@ -116,4 +116,4 @@ namespace Str
             GL_UNSIGNED_INT,
             nullptr));
     }
-} // namespace Str
+} // namespace Star

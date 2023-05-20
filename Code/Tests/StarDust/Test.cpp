@@ -1,15 +1,14 @@
 #include "Test.h"
 #include "AxesTest.h"
 #include "InstancingTest.h"
-#include "PrimitiveTest.h"
+#include "MeshTest.h"
 #include "TestScene.h"
 
 const std::map<Test::TestType, std::string> Test::TestTypeMap{
     { Test::TestType::Axes, "Axes" },
     { Test::TestType::Instancing, "Instancing" },
-    { Test::TestType::Primitive, "Primitive" },
+    { Test::TestType::Mesh, "Mesh" },
     { Test::TestType::Scene, "Scene" },
-    { Test::TestType::Stress, "Stress" },
 };
 
 Test::Test(Test::TestType type)
@@ -25,8 +24,8 @@ Test* Test::CreateTest(Test::TestType type)
         return new AxesTest();
     case TestType::Instancing:
         return new InstancingTest();
-    case TestType::Primitive:
-        return new PrimitiveTest();
+    case TestType::Mesh:
+        return new MeshTest();
     case TestType::Scene:
         return new TestScene();
     default:

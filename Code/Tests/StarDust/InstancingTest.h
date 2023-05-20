@@ -11,7 +11,7 @@ public:
     ~InstancingTest() = default;
 
     void OnUpdate(float deltaTime) override;
-    void OnRender(Str::Window& window) override;
+    void OnRender(Star::Window& window) override;
     void OnImGuiRender() override;
 private:
     static constexpr unsigned int InstanceCount = 100000U;
@@ -22,8 +22,9 @@ private:
     float m_speedMultiplier = 0.001f;
     float m_fieldOfView = 45.0f;
 
-    std::vector<Str::ModelInstance> m_instances;
+    std::vector<Star::ModelInstance> m_instances;
     std::vector<Uni::Math::Vector3f> m_velocities;
+    Star::LightSource m_lightSource;
 
     glm::mat4 m_viewMatrix;
     glm::mat4 m_projectionMatrix;

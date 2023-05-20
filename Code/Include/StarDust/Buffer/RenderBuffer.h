@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 
-namespace Str
+namespace Star
 {
     class RenderBuffer
     {
@@ -25,4 +25,4 @@ namespace Str
     private:
         unsigned int m_id;
     };
-} // namespace Str
+} // namespace Star

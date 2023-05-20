@@ -5,7 +5,7 @@
 #include <Universal/Math/Vector/Vector3f.h>
 #include <stdexcept>
 
-namespace Str
+namespace Star
 {
     VertexBufferLayout::VertexBufferLayout()
         : m_stride(0)
@@ -61,7 +61,7 @@ namespace Str
     }
 
     template<>
-    void VertexBufferLayout::Push<InstanceData>(unsigned int count)
+    void VertexBufferLayout::Push<ModelInstanceData>(unsigned int count)
     {
         for (int i = 0; i < 3; ++i)
         {
@@ -82,4 +82,4 @@ namespace Str
     {
         return m_stride;
     }
-} // namespace Str
+} // namespace Star

@@ -6,25 +6,25 @@
 #include <StarDust/VertexArray.h>
 #include <Universal/Math/Matrix/Matrix3x4f.h>
 
-namespace Str
+namespace Star
 {
-    struct InstanceData;
+    struct ModelInstanceData;
 
     //! Class used for rendering a mesh.
     class Model
     {
     public:
         explicit Model(Mesh mesh);
-        Model(const Model& other) = delete;
-        Model(Model&& other) noexcept = delete;
+        Model(const Model& other);
+        Model(Model&& other) noexcept;
         ~Model() = default;
 
-        Mesh GetMesh() const;
+        [[nodiscard]] const Mesh& GetMesh() const;
+        Mesh& GetMesh();
 
-        void RenderInstances(
-            std::vector<InstanceData>& instances);
+        void RenderInstances(std::vector<ModelInstanceData>& instances);
 
-        Model& operator=(const Model& other) = delete;
+        Model& operator=(const Model& other);
 
     private:
         Mesh m_mesh;
@@ -33,4 +33,4 @@ namespace Str
         IndexBuffer m_indexBuffer;
         VertexArray m_vertexArray;
     };
-} // namespace Str
+} // namespace Star

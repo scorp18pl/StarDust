@@ -1,6 +1,9 @@
 #pragma once
 
 #include "Test.h"
+#include <StarDust/Model/ModelInstance.h>
+#include <StarDust/Model/MeshRegistry.h>
+#include <Universal/Math/Transform.h>
 #include <glm/glm.hpp>
 
 class AxesTest : public Test
@@ -10,19 +13,17 @@ public:
     ~AxesTest() = default;
 
     void OnUpdate(float deltaTime) override;
-    void OnRender(Str::Window& window) override;
+    void OnRender(Star::Window& window) override;
     void OnImGuiRender() override;
 
 private:
-    Str::ModelInstance m_axisX{ Str::PrimitiveType::Box };
-    Str::ModelInstance m_axisY{ Str::PrimitiveType::Box };
-    Str::ModelInstance m_axisZ{ Str::PrimitiveType::Box };
+    Star::ModelInstance m_axisX{ Star::MeshRegistry::Get().GetMeshId("Box") };
+    Star::ModelInstance m_axisY{ Star::MeshRegistry::Get().GetMeshId("Box") };
+    Star::ModelInstance m_axisZ{ Star::MeshRegistry::Get().GetMeshId("Box") };
 
     Uni::Math::Transform m_rootTransform;
 
-    Uni::Math::Vector3f m_rotation{ 0.0f, 0.0f, 0.0f };
-    Uni::Math::Vector3f m_translation{ 0.0f, 0.0f, 0.0f };
-
+    Star::LightSource m_lightSource;
     glm::mat4 m_viewMatrix;
     glm::mat4 m_projectionMatrix;
 };

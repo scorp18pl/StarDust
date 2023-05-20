@@ -3,19 +3,11 @@
 #include <Universal/Graphics/Color.h>
 #include <Universal/Math/Vector/Vector2f.h>
 #include <vector>
+#include <string>
 
-namespace Str
+namespace Star
 {
     using Index = unsigned int;
-
-    enum class PrimitiveType
-    {
-        None,
-        Triangle,
-        Rectangle,
-        Box,
-        Icosahedron,
-    };
 
     struct Vertex
     {
@@ -26,7 +18,15 @@ namespace Str
 
     struct Mesh
     {
+        using IdType = int;
+        static constexpr IdType InvalidId = -1;
+
+        static Mesh ReadFromObjFile(const std::string& fileName);
+
+        void WriteToObjFile(const std::string& fileName);
+
         std::vector<Vertex> m_vertices;
         std::vector<Index> m_indices;
+        std::string m_name;
     };
-} // namespace Str
+} // namespace Star
