@@ -1,5 +1,6 @@
 #include <StarDust/Model/MeshRegistry.h>
 #include <StarDust/Model/ModelInstanceSystem.h>
+#include <stdexcept>
 
 namespace Star
 {
@@ -24,7 +25,24 @@ namespace Star
         }
 
         m_instances[id].m_meshId = meshId;
-        m_models.at(meshId).m_instances.insert(id);
+        try
+        {
+            m_models.at(meshId).m_instances.insert(id);
+        } catch (const std::out_of_range&)
+        {
+            const auto& mesh =
+                MeshRegistry::Get().GetRegisteredMeshes().find(meshId);
+            if (mesh == MeshRegistry::Get().GetRegisteredMeshes().end())
+            {
+                throw std::runtime_error(
+                    "Mesh with id " + std::to_string(meshId) + " not found");
+            }
+            else
+            {
+                m_models.emplace(
+                    meshId, ModelWrapper{ Model{ mesh->second }, { id } });
+            }
+        }
 
         return id;
     }

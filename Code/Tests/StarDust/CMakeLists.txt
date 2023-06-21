@@ -14,7 +14,7 @@ add_executable(${PROJECT_NAME} Tests.cpp
         MeshTest.h
         TestScene.cpp
         TestScene.h
-        )
+        TerrainGenerationTest.cpp TerrainGenerationTest.h CubeGameTest.cpp CubeGameTest.h)
 
 target_include_directories(${PROJECT_NAME} PRIVATE ../../3rdParty/glm)
 target_include_directories(${PROJECT_NAME} PRIVATE .)

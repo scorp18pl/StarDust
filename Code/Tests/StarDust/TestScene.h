@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Test.h"
 #include <StarDust/LightSource.h>
 #include <glm/mat4x4.hpp>
@@ -6,15 +8,16 @@
 class TestScene : public Test
 {
 public:
-    TestScene();
+    TestScene(TestType testType = TestType::Scene);
     ~TestScene() = default;
 
     void OnUpdate(float deltaTime) override;
     void OnRender(Star::Window& window) override;
     void OnImGuiRender() override;
 
-private:
+protected:
     std::vector<Star::ModelInstance> m_instances;
+    float m_deltaTime = 1.0f;
     unsigned int m_currentInstance = 0U;
 
     std::vector<std::pair<int, Star::LightSourceType>> m_lights;

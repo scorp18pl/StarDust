@@ -13,6 +13,8 @@ public:
         Instancing,
         Mesh,
         Scene,
+        TerrainGeneration,
+        CubeGame,
     };
 
     static const std::map<TestType, std::string> TestTypeMap;

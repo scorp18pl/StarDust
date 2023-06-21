@@ -2,12 +2,11 @@
 #include <GLFW/glfw3.h>
 #include <StarDust/Model/MeshRegistry.h>
 #include <StarDust/Shader/ShaderProgramRegistry.h>
-#include <Universal/Math/Math.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <imgui/imgui.h>
 
-TestScene::TestScene()
-    : Test(Test::TestType::Scene)
+TestScene::TestScene(TestType testType)
+    : Test(testType)
 {
     m_cameraYaw = 0.0f;
     m_cameraPitch = 20.0f;
@@ -17,37 +16,11 @@ TestScene::TestScene()
         0.0f,
         20.0f,
     };
-
-    m_instances.emplace_back(
-        Star::MeshRegistry::Get().GetMeshId("Box"),
-        Uni::Math::Transform{
-            Uni::Math::Quaternion::CreateIdentity(),
-            Uni::Math::Vector3f{ 100.0f, 100.0f, 1.0f },
-            Uni::Math::Vector3f::CreateZero(),
-        },
-        Uni::Grpx::Color::White);
-
-    m_instances.emplace_back(
-        Star::MeshRegistry::Get().GetMeshId("Icosahedron"),
-        Uni::Math::Transform{
-            Uni::Math::Quaternion::CreateIdentity(),
-            Uni::Math::Vector3f{ 4.0f },
-            Uni::Math::Vector3f{ 0.0f, 0.0f, 4.0f },
-        },
-        Uni::Grpx::Color::Red);
 }
 
 void TestScene::OnUpdate(float deltaTime)
 {
-    m_instances[1].GetTransform().Rotate(
-        Uni::Math::Quaternion::CreateFromAxisRad(
-            0.001f * deltaTime,
-            Uni::Math::Vector3f{ 1.0f, 1.0f, 1.0f }.GetNormalized()));
-
-    for (auto& instance : m_instances)
-    {
-        instance.Update();
-    }
+    m_deltaTime = deltaTime;
 }
 
 void TestScene::OnRender(Star::Window& window)
@@ -229,6 +202,8 @@ void TestScene::OnImGuiRender()
 
             ImGui::ColorEdit3("Color", color.m_data);
 
+            m_instances[m_currentInstance].Update();
+
             ImGui::Unindent(4.0f);
         }
     }
@@ -285,7 +260,7 @@ void TestScene::OnImGuiRender()
 
         if (m_currentLight < m_lights.size())
         {
-            ImGui::Text("Selected Point Light: %d", m_currentLight);
+            ImGui::Text("Selected Light Source: %d", m_currentLight);
             ImGui::Indent(4.0f);
 
             Star::LightData& pointLight =
@@ -311,7 +286,7 @@ void TestScene::OnImGuiRender()
 
 void TestScene::HandleCamera(Star::Window& window)
 {
-    static float sensitivity = 0.01f;
+    static float sensitivity = 1.0e-2f;
 
     GLFWwindow* glfwWindow = window.GetNativeWindow();
     auto windowWidth = static_cast<float>(window.GetWidth());
@@ -319,28 +294,28 @@ void TestScene::HandleCamera(Star::Window& window)
 
     if (glfwGetKey(glfwWindow, GLFW_KEY_W) == GLFW_PRESS)
     {
-        m_cameraTranslation += sensitivity *
+        m_cameraTranslation += sensitivity * m_deltaTime *
             (Uni::Math::Matrix3x4f::CreateRotationEulerDegrees(
                  m_cameraYaw, Uni::Math::Axis::Z) *
              Uni::Math::Vector3f{ 1.0f, 0.0f, 0.0f });
     }
     if (glfwGetKey(glfwWindow, GLFW_KEY_A) == GLFW_PRESS)
     {
-        m_cameraTranslation += sensitivity *
+        m_cameraTranslation += sensitivity * m_deltaTime *
             (Uni::Math::Matrix3x4f::CreateRotationEulerDegrees(
                  m_cameraYaw, Uni::Math::Axis::Z) *
              Uni::Math::Vector3f{ 0.0f, 1.0f, 0.0f });
     }
     if (glfwGetKey(glfwWindow, GLFW_KEY_S) == GLFW_PRESS)
     {
-        m_cameraTranslation += sensitivity *
+        m_cameraTranslation += sensitivity * m_deltaTime *
             (Uni::Math::Matrix3x4f::CreateRotationEulerDegrees(
                  m_cameraYaw, Uni::Math::Axis::Z) *
              Uni::Math::Vector3f{ -1.0f, 0.0f, 0.0f });
     }
     if (glfwGetKey(glfwWindow, GLFW_KEY_D) == GLFW_PRESS)
     {
-        m_cameraTranslation += sensitivity *
+        m_cameraTranslation += sensitivity * m_deltaTime *
             (Uni::Math::Matrix3x4f::CreateRotationEulerDegrees(
                  m_cameraYaw, Uni::Math::Axis::Z) *
              Uni::Math::Vector3f{ 0.0f, -1.0f, 0.0f });
@@ -349,13 +324,13 @@ void TestScene::HandleCamera(Star::Window& window)
     if (glfwGetKey(glfwWindow, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
     {
         m_cameraTranslation +=
-            sensitivity * Uni::Math::Vector3f{ 0.0f, 0.0f, -1.0f };
+            sensitivity * m_deltaTime * Uni::Math::Vector3f{ 0.0f, 0.0f, -1.0f };
     }
 
     if (glfwGetKey(glfwWindow, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
     {
         m_cameraTranslation +=
-            sensitivity * Uni::Math::Vector3f{ 0.0f, 0.0f, 1.0f };
+            sensitivity * m_deltaTime * Uni::Math::Vector3f{ 0.0f, 0.0f, 1.0f };
     }
 
     static bool last = false;

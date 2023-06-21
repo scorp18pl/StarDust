@@ -46,6 +46,7 @@ int main()
 
     Uni::Sys::Clock clock;
 
+    float elapsedTime = 0.0f;
     while (window.IsOpen())
     {
         window.Update();
@@ -77,10 +78,12 @@ int main()
             ImGui::Unindent(4.0f);
         }
 
+        float fps = 1.0e3f / elapsedTime;
+        ImGui::Text("FPS: %.2f", fps);
+
         ImGui::SliderInt("Pixelization factor:", &pixelizationFactor, 1, 8);
         ImGui::InputFloat("Distortion factor:", &distortionFactor);
-        ImGui::InputFloat(
-            "Color shift factor:", &colorShiftFactor);
+        ImGui::InputFloat("Color shift factor:", &colorShiftFactor);
         ImGui::Checkbox("Enable palette snap", &enablePaletteSnap);
 
         if (enablePaletteSnap)
@@ -138,7 +141,8 @@ int main()
 
         modelInstanceShader.SetUniform1f(
             "u_pointLightConstant", pointLightConstant);
-        modelInstanceShader.SetUniform1f("u_pointLightLinear", pointLightLinear);
+        modelInstanceShader.SetUniform1f(
+            "u_pointLightLinear", pointLightLinear);
         modelInstanceShader.SetUniform1f(
             "u_pointLightQuadratic", pointLightQuadratic);
 
@@ -154,7 +158,8 @@ int main()
 
         if (currentTest)
         {
-            currentTest->OnUpdate(clock.GetElapsedTime());
+            elapsedTime = clock.GetElapsedTime();
+            currentTest->OnUpdate(elapsedTime);
             clock.Reset();
             currentTest->OnRender(window);
 

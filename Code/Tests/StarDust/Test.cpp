@@ -1,14 +1,17 @@
 #include "Test.h"
 #include "AxesTest.h"
+#include "CubeGameTest.h"
 #include "InstancingTest.h"
 #include "MeshTest.h"
-#include "TestScene.h"
+#include "TerrainGenerationTest.h"
 
 const std::map<Test::TestType, std::string> Test::TestTypeMap{
     { Test::TestType::Axes, "Axes" },
     { Test::TestType::Instancing, "Instancing" },
     { Test::TestType::Mesh, "Mesh" },
     { Test::TestType::Scene, "Scene" },
+    { Test::TestType::TerrainGeneration, "Terrain Generation" },
+    { Test::TestType::CubeGame, "Cube Game" },
 };
 
 Test::Test(Test::TestType type)
@@ -28,6 +31,10 @@ Test* Test::CreateTest(Test::TestType type)
         return new MeshTest();
     case TestType::Scene:
         return new TestScene();
+    case TestType::TerrainGeneration:
+        return new TerrainGenerationTest();
+    case TestType::CubeGame:
+        return new CubeGameTest();
     default:
         return nullptr;
     }
