@@ -1,5 +1,5 @@
 #include <StarDust/Shader/ShaderProgram.h>
-#include <StarDust/Utils.h>
+#include <StarDust/Utilities/Utils.h>
 #include <fstream>
 #include <glad/glad.h>
 #include <iostream>
@@ -95,12 +95,15 @@ namespace Star
         GL_CHECK(glUniform4f(GetUniformLocation(name), v0, v1, v2, v3));
     }
 
-    void ShaderProgram::SetUniformMat4f(
-        const char* name, const glm::mat4& matrix)
+    void ShaderProgram::SetUniformMat4x4f(
+        const char* name, const Uni::Math::Matrix4x4f& matrix)
     {
         Bind();
         GL_CHECK(glUniformMatrix4fv(
-            GetUniformLocation(name), 1, GL_FALSE, &matrix[0][0]));
+            GetUniformLocation(name),
+            1,
+            GL_TRUE,
+            reinterpret_cast<const GLfloat*>(&matrix)));
     }
 
     void ShaderProgram::SetUniformMat3x4f(

@@ -2,6 +2,7 @@
 
 #include <StarDust/Model/ModelInstance.h>
 #include <StarDust/Shader/ShaderProgramRegistry.h>
+#include <StarDust/Utilities/Math.h>
 #include <Universal/Math/Math.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <imgui.h>
@@ -67,45 +68,39 @@ void AxesTest::OnUpdate(float deltaTime)
 
 void AxesTest::OnRender(Star::Window& window)
 {
-    m_projectionMatrix = glm::ortho(
+    m_projectionMatrix = Star::Utils::CreateOrthographicProjectionMatrix(
         -static_cast<float>(window.GetWidth()) / 32.0f,
         static_cast<float>(window.GetWidth()) / 32.0f,
         -static_cast<float>(window.GetHeight()) / 32.0f,
         static_cast<float>(window.GetHeight()) / 32.0f,
         0.1f,
         10000.0f);
-    m_viewMatrix = glm::lookAt(
-        glm::vec3(
-            80.0f,
-            80.0f,
-            80.0f), // Camera is at in World Space
-        glm::vec3(
-            0.0f,
-            0.0f,
-            0.0f), // and looks at the origin
-        glm::vec3(0, 0, 1) // Head is up (set to 0,-1,0 to look upside-down)
-    );
+
+    m_viewMatrix = Star::Utils::CreateLookAtMatrix(
+        Uni::Math::Vector3f{ 50.0f },
+        Uni::Math::Vector3f::CreateZero(),
+        Uni::Math::Vector3f::CreateAxisZ());
 
     Star::ShaderProgram& shader =
         Star::ShaderProgramRegistry::Get().GetShaderProgram("model_instance");
     shader.Bind();
-    shader.SetUniformMat4f("u_view", m_viewMatrix);
-    shader.SetUniformMat4f("u_proj", m_projectionMatrix);
+    shader.SetUniformMat4x4f("u_view", m_viewMatrix);
+    shader.SetUniformMat4x4f("u_proj", m_projectionMatrix);
 }
 
 void AxesTest::OnImGuiRender()
 {
     Uni::Math::Vector3f rotationDegrees =
         m_rootTransform.GetRotation().GetEulerRadZYX() *
-        (180.0f / Uni::Math::Constants::PI);
+        Uni::Math::Constants::RadToDeg;
     Uni::Math::Vector3f translation = m_rootTransform.GetTranslation();
 
     ImGui::Text("Coordinate system (X - Red, Y - Green, Z - Blue)");
-    ImGui::SliderFloat3("Rotation (Rad):", rotationDegrees.m_data, 0.0f, 2.0f);
+    ImGui::SliderFloat3("Rotation (Deg.):", rotationDegrees.m_data, 0.0f, 90.0f);
     ImGui::SliderFloat3(
         "Translation (Meters):", translation.m_data, -20.0f, 20.0f);
 
     m_rootTransform.SetRotation(Uni::Math::Quaternion::CreateFromEulerRadZYX(
-        rotationDegrees * (Uni::Math::Constants::PI / 180.0f)));
+        rotationDegrees * Uni::Math::Constants::DegToRad));
     m_rootTransform.SetTranslation(translation);
 }

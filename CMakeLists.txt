@@ -16,8 +16,8 @@ add_library(stardust STATIC
         Code/Source/StarDust/Buffer/IndexBuffer.cpp
         Code/Source/StarDust/VertexArray.cpp
         Code/Source/StarDust/Shader/ShaderProgram.cpp
-        Code/Source/StarDust/Utils.cpp
-        Code/Include/StarDust/Utils.h
+        Code/Source/StarDust/Utilities/Utils.cpp
+        Code/Include/StarDust/Utilities/Utils.h
         Code/Source/StarDust/Buffer/VertexBufferLayout.cpp
         Code/Include/StarDust/Buffer/VertexBufferLayout.h
         Code/Source/StarDust/Texture.cpp
@@ -39,10 +39,12 @@ add_library(stardust STATIC
         Code/Source/StarDust/Buffer/RenderBuffer.cpp
         Code/Include/StarDust/Buffer/RenderBuffer.h
         Code/Tests/StarDust/Tests.cpp
+        Code/Source/StarDust/LightSource.cpp
         Code/Include/StarDust/LightSource.h
         Code/Source/StarDust/Model/ModelInstanceSystem.cpp
         Code/Include/StarDust/Model/ModelInstanceSystem.h
-        Code/Source/StarDust/LightSource.cpp)
+        Code/Source/StarDust/Utilities/Math.cpp
+        Code/Include/StarDust/Utilities/Math.h)
 
 include(Code/3rdParty/CreateTargets.cmake)
 

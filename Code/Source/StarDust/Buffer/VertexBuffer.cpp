@@ -1,5 +1,5 @@
 #include <StarDust/Buffer/VertexBuffer.h>
-#include <StarDust/Utils.h>
+#include <StarDust/Utilities/Utils.h>
 #include <glad/glad.h>
 
 namespace Star

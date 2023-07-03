@@ -1,5 +1,5 @@
-#include <StarDust/Utils.h>
 #include <StarDust/VertexArray.h>
+#include <StarDust/Utilities/Utils.h>
 
 namespace Star
 {

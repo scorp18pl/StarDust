@@ -1,5 +1,5 @@
 #include <StarDust/Model/MeshRegistry.h>
-#include <StarDust/Utils.h>
+#include <StarDust/Utilities/Utils.h>
 #include <filesystem>
 
 namespace Star

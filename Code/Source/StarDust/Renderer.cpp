@@ -1,7 +1,7 @@
+#include <StarDust/Model/ModelInstanceSystem.h>
 #include <StarDust/Renderer.h>
 #include <StarDust/Shader/ShaderProgramRegistry.h>
-#include <StarDust/Model/ModelInstanceSystem.h>
-#include <StarDust/Utils.h>
+#include <StarDust/Utilities/Utils.h>
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_opengl3.h>
 

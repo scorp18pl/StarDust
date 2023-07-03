@@ -34,7 +34,3 @@ add_library(imgui STATIC
 target_include_directories(imgui PUBLIC
         ${3RD_PARTY_DIR}/imgui/include
         )
-
-set(3RD_PARTY_INCLUDE_DIRS
-        ${3RD_PARTY_DIR}/glm/
-        )

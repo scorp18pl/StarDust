@@ -1,4 +1,4 @@
-#include <StarDust/Utils.h>
+#include <StarDust/Utilities/Utils.h>
 #include <glad/glad.h>
 #include <iostream>
 #include <string>
@@ -62,7 +62,7 @@ namespace Star
         std::filesystem::path currentDirectoryPath =
             currentFilePath.parent_path();
 
-        return currentDirectoryPath.parent_path().parent_path().parent_path() /
+        return currentDirectoryPath.parent_path().parent_path().parent_path().parent_path() /
             "Resources";
     }
 } // namespace Star

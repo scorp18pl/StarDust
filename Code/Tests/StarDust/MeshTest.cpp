@@ -1,6 +1,8 @@
 #include <StarDust/Model/MeshRegistry.h>
 #include <StarDust/Shader/ShaderProgram.h>
 #include <StarDust/Shader/ShaderProgramRegistry.h>
+#include <StarDust/Utilities/Math.h>
+#include <Universal/Math/Math.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <imgui.h>
 
@@ -13,7 +15,7 @@ MeshTest::MeshTest()
           Star::LightData{
               Uni::Math::Vector3f{ 0.0f, 0.0f, -1.0f },
               Uni::Grpx::Color::White,
-              2.0f,
+              1.0f,
           })
 {
     m_instance = Star::ModelInstance(
@@ -22,17 +24,12 @@ MeshTest::MeshTest()
         Uni::Grpx::Color::CreateFromVector3f(
             Uni::Math::Vector3f{ 1.0f }, 1.0f));
 
-    m_viewMatrix = glm::lookAt(
-        glm::vec3(
-            50.0f,
-            0.0f,
-            0.0f), // Camera is at in World Space
-        glm::vec3(
-            0.0f,
-            0.0f,
-            0.0f), // and looks at the origin
-        glm::vec3(0, 0, 1) // Head is up (set to 0,-1,0 to look upside-down)
-    );
+    m_viewMatrix = Star::Utils::CreateLookAtMatrix(
+        Uni::Math::Vector3f::CreateAxisX() * 50.0f,
+        Uni::Math::Vector3f::CreateZero(),
+        Uni::Math::Vector3f::CreateAxisZ());
+
+
 }
 
 void MeshTest::OnUpdate(float deltaTime)
@@ -59,8 +56,8 @@ void MeshTest::OnUpdate(float deltaTime)
 
 void MeshTest::OnRender(Star::Window& window)
 {
-    m_projectionMatrix = glm::perspective(
-        glm::radians(90.0f),
+    m_projectionMatrix = Star::Utils::CreatePerspectiveProjectionMatrix(
+        90.0f * Uni::Math::Constants::DegToRad,
         static_cast<float>(window.GetWidth()) /
             static_cast<float>(window.GetHeight()),
         0.1f,
@@ -70,8 +67,8 @@ void MeshTest::OnRender(Star::Window& window)
         Star::ShaderProgramRegistry::Get().GetShaderProgram("model_instance");
     shader.Bind();
 
-    shader.SetUniformMat4f("u_view", m_viewMatrix);
-    shader.SetUniformMat4f("u_proj", m_projectionMatrix);
+    shader.SetUniformMat4x4f("u_view", m_viewMatrix);
+    shader.SetUniformMat4x4f("u_proj", m_projectionMatrix);
 }
 
 void MeshTest::OnImGuiRender()

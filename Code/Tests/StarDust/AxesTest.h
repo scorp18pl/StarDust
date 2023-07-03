@@ -24,6 +24,6 @@ private:
     Uni::Math::Transform m_rootTransform;
 
     Star::LightSource m_lightSource;
-    glm::mat4 m_viewMatrix;
-    glm::mat4 m_projectionMatrix;
+    Uni::Math::Matrix4x4f m_viewMatrix;
+    Uni::Math::Matrix4x4f m_projectionMatrix;
 };

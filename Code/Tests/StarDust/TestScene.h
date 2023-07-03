@@ -23,7 +23,7 @@ protected:
     std::vector<std::pair<int, Star::LightSourceType>> m_lights;
     unsigned int m_currentLight = 0U;
 
-    glm::mat4 m_viewMatrix;
+    Uni::Math::Matrix4x4f m_viewMatrix;
 
     Uni::Math::Vector3f m_cameraTranslation;
     float m_cameraPitch = 0.0f;
@@ -36,7 +36,7 @@ protected:
     float m_aspectRatio = 1.0f;
     Uni::Math::Vector3f m_orthoSize = Uni::Math::Vector3f{ 100.0f };
 
-    glm::mat4 m_projectionMatrix;
+    Uni::Math::Matrix4x4f m_projectionMatrix;
 
     void HandleCamera(Star::Window& window);
 };

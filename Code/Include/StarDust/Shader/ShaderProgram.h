@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Universal/Math/Matrix/Matrix3x4f.h>
-#include <glm/glm.hpp>
 #include <string>
 #include <unordered_map>
 
@@ -25,7 +24,8 @@ namespace Star
         void SetUniform3f(const char* name, float v0, float v1, float v2);
         void SetUniform4f(
             const char* name, float v0, float v1, float v2, float v3);
-        void SetUniformMat4f(const char* name, const glm::mat4& matrix);
+        void SetUniformMat4x4f(
+            const char* name, const Uni::Math::Matrix4x4f& matrix);
         void SetUniformMat3x4f(
             const char* name, const Uni::Math::Matrix3x4f& matrix);
         void SetUniformMat3x4fArray(

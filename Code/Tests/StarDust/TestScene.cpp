@@ -2,6 +2,8 @@
 #include <GLFW/glfw3.h>
 #include <StarDust/Model/MeshRegistry.h>
 #include <StarDust/Shader/ShaderProgramRegistry.h>
+#include <StarDust/Utilities/Math.h>
+#include <Universal/Math/Math.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <imgui/imgui.h>
 
@@ -32,12 +34,15 @@ void TestScene::OnRender(Star::Window& window)
         m_aspectRatio = static_cast<float>(window.GetWidth()) /
             static_cast<float>(window.GetHeight());
 
-        m_projectionMatrix = glm::perspective(
-            glm::radians(m_fieldOfView), m_aspectRatio, 0.1f, 1000.0f);
+        m_projectionMatrix = Star::Utils::CreatePerspectiveProjectionMatrix(
+            m_fieldOfView * Uni::Math::Constants::DegToRad,
+            m_aspectRatio,
+            0.1f,
+            1000.0f);
     }
     else
     {
-        m_projectionMatrix = glm::ortho(
+        m_projectionMatrix = Star::Utils::CreateOrthographicProjectionMatrix(
             -m_orthoSize.m_x,
             m_orthoSize.m_x,
             -m_orthoSize.m_y,
@@ -49,9 +54,9 @@ void TestScene::OnRender(Star::Window& window)
     Star::ShaderProgram& shaderProgram =
         Star::ShaderProgramRegistry::Get().GetShaderProgram("model_instance");
 
-    shaderProgram.SetUniformMat4f("u_proj", m_projectionMatrix);
+    shaderProgram.SetUniformMat4x4f("u_proj", m_projectionMatrix);
 
-    shaderProgram.SetUniformMat4f("u_view", m_viewMatrix);
+    shaderProgram.SetUniformMat4x4f("u_view", m_viewMatrix);
 
     shaderProgram.SetUniform3f(
         "u_viewPosition",
@@ -323,8 +328,8 @@ void TestScene::HandleCamera(Star::Window& window)
 
     if (glfwGetKey(glfwWindow, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
     {
-        m_cameraTranslation +=
-            sensitivity * m_deltaTime * Uni::Math::Vector3f{ 0.0f, 0.0f, -1.0f };
+        m_cameraTranslation += sensitivity * m_deltaTime *
+            Uni::Math::Vector3f{ 0.0f, 0.0f, -1.0f };
     }
 
     if (glfwGetKey(glfwWindow, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
@@ -379,24 +384,17 @@ void TestScene::HandleCamera(Star::Window& window)
         glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
 
-    Uni::Math::Vector3f cameraFront = m_cameraTranslation +
+    const Uni::Math::Matrix3x4f cameraRotation =
         Uni::Math::Matrix3x4f::CreateRotationEulerDegrees(
             m_cameraYaw, Uni::Math::Axis::Z) *
-            Uni::Math::Matrix3x4f::CreateRotationEulerDegrees(
-                m_cameraPitch, Uni::Math::Axis::Y) *
-            Uni::Math::Vector3f{ 1.0f, 0.0f, 0.0f };
+        Uni::Math::Matrix3x4f::CreateRotationEulerDegrees(
+            m_cameraPitch, Uni::Math::Axis::Y);
 
-    Uni::Math::Vector3f cameraUp = Uni::Math::Vector3f{ 0.0f, 0.0f, 1.0f };
+    Uni::Math::Vector3f cameraFront = m_cameraTranslation +
+        cameraRotation * Uni::Math::Vector3f::CreateAxisX();
 
-    m_viewMatrix = glm::lookAt(
-        glm::vec3(
-            m_cameraTranslation.m_x,
-            m_cameraTranslation.m_y,
-            m_cameraTranslation.m_z), // Camera is at in World Space
-        glm::vec3(
-            cameraFront.m_x,
-            cameraFront.m_y,
-            cameraFront.m_z), // and looks at the origin
-        glm::vec3(cameraUp.m_x, cameraUp.m_y, cameraUp.m_z) // Head is up
-    );
+    Uni::Math::Vector3f cameraUp =  cameraRotation * Uni::Math::Vector3f::CreateAxisZ();
+
+    m_viewMatrix = Star::Utils::CreateLookAtMatrix(
+        m_cameraTranslation, cameraFront, cameraUp);
 }

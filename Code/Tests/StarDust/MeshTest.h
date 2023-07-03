@@ -38,6 +38,6 @@ private:
         Uni::Grpx::Color::CreateFromVector3f(
             Uni::Math::Vector3f{ 1.0f }, 1.0f));
 
-    glm::mat4 m_viewMatrix;
-    glm::mat4 m_projectionMatrix;
+    Uni::Math::Matrix4x4f m_viewMatrix;
+    Uni::Math::Matrix4x4f m_projectionMatrix;
 };

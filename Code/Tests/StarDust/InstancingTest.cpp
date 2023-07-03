@@ -3,6 +3,7 @@
 #include <StarDust/Model/MeshRegistry.h>
 #include <StarDust/Model/ModelInstance.h>
 #include <StarDust/Shader/ShaderProgramRegistry.h>
+#include <StarDust/Utilities/Math.h>
 #include <Universal/Math/Random/Generator.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <imgui.h>
@@ -45,17 +46,10 @@ InstancingTest::InstancingTest()
             Uni::Math::Vector3f::CreateRandomUnitVector(generator) * 0.01f);
     }
 
-    m_viewMatrix = glm::lookAt(
-        glm::vec3(
-            0.0f,
-            0.0f,
-            0.0f), // Camera is at in World Space
-        glm::vec3(
-            1.0f,
-            0.0f,
-            0.0f), // and looks at the origin
-        glm::vec3(0, 0, 1) // Head is up (set to 0,-1,0 to look upside-down)
-    );
+    m_viewMatrix = Star::Utils::CreateLookAtMatrix(
+                       Uni::Math::Vector3f::CreateZero(),
+                       Uni::Math::Vector3f::CreateAxisX(),
+                       Uni::Math::Vector3f::CreateAxisZ());
 }
 
 void InstancingTest::OnUpdate(float deltaTime)
@@ -98,15 +92,16 @@ void InstancingTest::OnUpdate(float deltaTime)
         instance.Update();
     }
 
-    m_viewMatrix = glm::rotate(
-        m_viewMatrix,
-        m_rotSpeed * 0.001f * deltaTime,
-        glm::vec3(1.0f, 2.0f, 3.0f));
+    m_viewMatrix = (Uni::Math::Quaternion::CreateFromAxisRad(
+                        m_rotSpeed * 0.001f * deltaTime, RotationAxis)
+                        .GetMatrix() *
+                    m_viewMatrix.ToMatrix3x4f())
+                       .ToMatrix4x4f();
 }
 
 void InstancingTest::OnRender(Star::Window& window)
 {
-    m_projectionMatrix = glm::perspective(
+    m_projectionMatrix = Star::Utils::CreatePerspectiveProjectionMatrix(
         glm::radians(m_fieldOfView),
         static_cast<float>(window.GetWidth()) /
             static_cast<float>(window.GetHeight()),
@@ -116,8 +111,8 @@ void InstancingTest::OnRender(Star::Window& window)
     Star::ShaderProgram& shader =
         Star::ShaderProgramRegistry::Get().GetShaderProgram("model_instance");
     shader.Bind();
-    shader.SetUniformMat4f("u_view", m_viewMatrix);
-    shader.SetUniformMat4f("u_proj", m_projectionMatrix);
+    shader.SetUniformMat4x4f("u_view", m_viewMatrix);
+    shader.SetUniformMat4x4f("u_proj", m_projectionMatrix);
     shader.SetUniform3f("u_viewPosition", 0.0f, 0.0f, 0.0f);
 }
 

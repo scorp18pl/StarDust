@@ -80,8 +80,11 @@ namespace Star
         ModelInstanceData& instanceData =
             ModelInstanceSystem::Get().GetInstanceData(m_instanceId);
 
-        instanceData.m_transform = m_transform.GetMatrix();
-        instanceData.m_normalTransform = m_transform.GetRotation().GetMatrix();
+        const Uni::Math::Transform& WorldTransform =
+            m_transform.GetWorldTransform();
+
+        instanceData.m_transform = WorldTransform.GetMatrix();
+        instanceData.m_normalTransform = WorldTransform.GetRotation().GetMatrix();
         instanceData.m_color = m_color;
     }
 

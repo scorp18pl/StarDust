@@ -1,5 +1,5 @@
-#include <StarDust/Utils.h>
 #include <StarDust/Window.h>
+#include <StarDust/Utilities/Utils.h>
 #include <glad/glad.h>
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_glfw.h>
@@ -17,10 +17,7 @@ namespace Star
             throw std::runtime_error("Failed to initialize GLFW.");
         }
 
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
         glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
         m_window = glfwCreateWindow(width, height, title, nullptr, nullptr);
         if (!m_window)

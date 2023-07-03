@@ -3,6 +3,7 @@
 #include "Test.h"
 
 #include <glm/mat4x4.hpp>
+#include <Universal/Math/Matrix/Matrix4x4f.h>
 
 class InstancingTest : public Test
 {
@@ -26,6 +27,6 @@ private:
     std::vector<Uni::Math::Vector3f> m_velocities;
     Star::LightSource m_lightSource;
 
-    glm::mat4 m_viewMatrix;
-    glm::mat4 m_projectionMatrix;
+    Uni::Math::Matrix4x4f m_viewMatrix;
+    Uni::Math::Matrix4x4f m_projectionMatrix;
 };

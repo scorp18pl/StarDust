@@ -1,5 +1,5 @@
 #include <StarDust/Buffer/RenderBuffer.h>
-#include <StarDust/Utils.h>
+#include <StarDust/Utilities/Utils.h>
 
 namespace Star
 {
