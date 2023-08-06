@@ -1,4 +1,5 @@
 #include <StarDust/Shader/ShaderProgramRegistry.h>
+#include <StarDust/Utilities/Utils.h>
 
 namespace Star
 {
@@ -27,15 +28,16 @@ namespace Star
 
     ShaderProgramRegistry::ShaderProgramRegistry()
     {
-        static constexpr std::string_view shaderPath =
-            "/home/scorp/Documents/code/repos/StarDust/Resources/Shaders";
+        static const std::string ShaderPath =
+            Utils::GetResourcesPath() / "Shaders";
+        static const std::string ShaderNames[] = {
+            "model_instance",
+            "pixelate",
+        };
 
-        static const std::string_view shaderNames[] = { "model_instance",
-                                                        "pixelate" };
-
-        for (const std::string_view& shaderName : shaderNames)
+        for (const std::string_view& shaderName : ShaderNames)
         {
-            Register(shaderPath.data(), shaderName.data());
+            Register(ShaderPath.data(), shaderName.data());
         }
     }
 } // namespace Star

@@ -1,5 +1,6 @@
 #include <StarDust/Buffer/RenderBuffer.h>
 #include <StarDust/Utilities/Utils.h>
+#include <glad/glad.h>
 
 namespace Star
 {
@@ -27,7 +28,8 @@ namespace Star
         GLenum internalFormat, unsigned int width, unsigned int height) const
     {
         Bind();
-        GL_CHECK(glRenderbufferStorage(GL_RENDERBUFFER, internalFormat, width, height));
+        GL_CHECK(glRenderbufferStorage(
+            GL_RENDERBUFFER, internalFormat, width, height));
     }
 
     RenderBuffer::~RenderBuffer()

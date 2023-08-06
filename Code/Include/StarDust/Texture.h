@@ -2,7 +2,6 @@
 
 #include <Universal/Graphics/Bitmap.h>
 #include <string>
-#include <glad/glad.h>
 
 namespace Star
 {

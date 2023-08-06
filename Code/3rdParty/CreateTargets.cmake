@@ -1,18 +1,12 @@
 set(3RD_PARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Code/3rdParty)
 
 find_package(OpenGL REQUIRED)
-
 find_library(UNIVERSAL universal)
 
-add_library(glad STATIC
-        ${3RD_PARTY_DIR}/glad/src/glad.c
-        )
+set(GLAD_SOURCES ${3RD_PARTY_DIR}/glad/src/glad.c)
+set(GLAD_INCLUDES ${3RD_PARTY_DIR}/glad/include)
 
-target_include_directories(glad PUBLIC
-        ${3RD_PARTY_DIR}/glad/include
-        )
-
-add_library(imgui STATIC
+set(IMGUI_SOURCES
         ${3RD_PARTY_DIR}/imgui/src/imgui/imgui.cpp
         ${3RD_PARTY_DIR}/imgui/src/imgui/imgui_demo.cpp
         ${3RD_PARTY_DIR}/imgui/src/imgui/imgui_draw.cpp
@@ -30,7 +24,7 @@ add_library(imgui STATIC
         ${3RD_PARTY_DIR}/imgui/include/imgui/imstb_textedit.h
         ${3RD_PARTY_DIR}/imgui/include/imgui/imstb_truetype.h
         )
+set(IMGUI_INCLUDES ${3RD_PARTY_DIR}/imgui/include)
 
-target_include_directories(imgui PUBLIC
-        ${3RD_PARTY_DIR}/imgui/include
-        )
+set(3RD_PARTY_SOURCES ${GLAD_SOURCES} ${IMGUI_SOURCES})
+set(3RD_PARTY_INCLUDES ${GLAD_INCLUDES} ${IMGUI_INCLUDES})

@@ -4,7 +4,6 @@
 #include <StarDust/Model/ModelInstance.h>
 #include <StarDust/Model/MeshRegistry.h>
 #include <Universal/Math/Transform.h>
-#include <glm/glm.hpp>
 
 class AxesTest : public Test
 {

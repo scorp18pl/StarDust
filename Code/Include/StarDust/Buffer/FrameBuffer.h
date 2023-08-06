@@ -2,7 +2,6 @@
 
 #include <StarDust/Buffer/RenderBuffer.h>
 #include <StarDust/Texture.h>
-#include <glad/glad.h>
 
 namespace Star
 {

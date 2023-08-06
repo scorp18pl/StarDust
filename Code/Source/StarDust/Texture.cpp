@@ -87,7 +87,9 @@ namespace Star
     Texture& Texture::operator=(const Texture& other)
     {
         if (this == &other)
+        {
             return *this;
+        }
 
         GL_CHECK(glGenTextures(1, &m_id));
         Bind();

@@ -1,5 +1,6 @@
 #include <StarDust/Model/Model.h>
 #include <StarDust/Model/ModelInstance.h>
+#include <glad/glad.h>
 
 #include <utility>
 
@@ -37,9 +38,10 @@ namespace Star
     }
 
     Model::Model(Model&& other) noexcept
-        : m_mesh{ std::move(other.m_mesh)}
+        : m_mesh{ std::move(other.m_mesh) }
         , m_vertexBuffer{ std::move(other.m_vertexBuffer) }
-        , m_instanceParametersBuffer{ std::move(other.m_instanceParametersBuffer) }
+        , m_instanceParametersBuffer{ std::move(
+              other.m_instanceParametersBuffer) }
         , m_indexBuffer{ std::move(other.m_indexBuffer) }
         , m_vertexArray{ std::move(other.m_vertexArray) }
     {

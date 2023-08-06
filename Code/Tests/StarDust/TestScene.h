@@ -2,7 +2,6 @@
 
 #include "Test.h"
 #include <StarDust/LightSource.h>
-#include <glm/mat4x4.hpp>
 #include <vector>
 
 class TestScene : public Test

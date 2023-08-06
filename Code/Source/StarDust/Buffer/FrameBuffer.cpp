@@ -4,8 +4,9 @@
 #include <StarDust/Buffer/VertexBufferLayout.h>
 #include <StarDust/Model/Mesh.h>
 #include <StarDust/Texture.h>
-#include <StarDust/VertexArray.h>
 #include <StarDust/Utilities/Utils.h>
+#include <StarDust/VertexArray.h>
+#include <glad/glad.h>
 #include <stdexcept>
 
 namespace Star

@@ -3,7 +3,6 @@
 #include <StarDust/Shader/ShaderProgramRegistry.h>
 #include <StarDust/Utilities/Math.h>
 #include <Universal/Math/Math.h>
-#include <glm/gtc/matrix_transform.hpp>
 #include <imgui.h>
 
 #include "MeshTest.h"
@@ -25,7 +24,7 @@ MeshTest::MeshTest()
             Uni::Math::Vector3f{ 1.0f }, 1.0f));
 
     m_viewMatrix = Star::Utils::CreateLookAtMatrix(
-        Uni::Math::Vector3f::CreateAxisX() * 50.0f,
+        Uni::Math::Vector3f::CreateAxisX() * 20.0f,
         Uni::Math::Vector3f::CreateZero(),
         Uni::Math::Vector3f::CreateAxisZ());
 
@@ -57,7 +56,7 @@ void MeshTest::OnUpdate(float deltaTime)
 void MeshTest::OnRender(Star::Window& window)
 {
     m_projectionMatrix = Star::Utils::CreatePerspectiveProjectionMatrix(
-        90.0f * Uni::Math::Constants::DegToRad,
+        60.0f * Uni::Math::Constants::DegToRad,
         static_cast<float>(window.GetWidth()) /
             static_cast<float>(window.GetHeight()),
         0.1f,

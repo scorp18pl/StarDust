@@ -82,22 +82,21 @@ namespace Star
 
     void Window::Clear()
     {
-        GL_CHECK(glClear(GL_COLOR_BUFFER_BIT));
-        Renderer::Get().Render();
-
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
         GL_CHECK(glfwSwapBuffers(m_window));
+        GL_CHECK(glClear(GL_COLOR_BUFFER_BIT));
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
     }
 
     void Window::Update() const
     {
         GL_CHECK(glfwPollEvents());
+        Renderer::Get().Render();
 
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     }
 
     void Window::SetPixelizationFactor(unsigned int factor)

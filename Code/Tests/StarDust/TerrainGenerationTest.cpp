@@ -5,6 +5,10 @@
 TerrainGenerationTest::TerrainGenerationTest()
     : TestScene(TestType::TerrainGeneration)
     , m_model({})
+    , m_lightSource(
+          Star::LightSourceType::Directional,
+          Star::LightData{
+              { 0.0f, -0.707f, -0.707f }, Uni::Grpx::Color::White, 1.0f })
 {
     static constexpr float MaxHeight = 100.0f;
     Uni::Alg::Noise::FloatMap2D map{ m_noiseGenerator.Generate(

@@ -10,7 +10,7 @@ struct LightData
 
 layout (location = 0) out vec4 color;
 
-in vec2 i_TexCoord;
+in vec2 i_texCoord;
 in vec4 i_color;
 in vec4 i_position;
 in vec4 i_normal;
@@ -35,6 +35,8 @@ uniform int u_directionalLightCount;
 
 uniform vec4 u_colorPalette[64];
 uniform int u_colorPaletteCount;
+
+uniform sampler2D u_texture;
 
 float calculateDistance(vec4 color1, vec4 color2)
 {
@@ -110,7 +112,13 @@ vec4 calculateCombinedLight()
 
 void main()
 {
-    color = (1.0f - u_ambientStrenght) * calculateCombinedLight() * i_color + u_ambientStrenght * i_color;
+    color = i_color;
+    if (i_texCoord.x >= 0.0f && i_texCoord.y >= 0.0f)
+    {
+        color = texture(u_texture, i_texCoord) * color;
+    }
+
+    color = (1.0f - u_ambientStrenght) * calculateCombinedLight() * color + u_ambientStrenght * color;
     color = clamp(color, 0.0f, 1.0f);
 
     if (u_colorPaletteCount > 0)

@@ -1,8 +1,9 @@
 #include <StarDust/Buffer/VertexBufferLayout.h>
 #include <StarDust/Model/ModelInstance.h>
+#include <StarDust/Utilities/Utils.h>
 #include <Universal/Math/Matrix/Matrix3x4f.h>
 #include <Universal/Math/Vector/Vector3f.h>
-#include <StarDust/Utilities/Utils.h>
+#include <glad/glad.h>
 #include <stdexcept>
 
 namespace Star

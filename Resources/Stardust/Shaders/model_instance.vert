@@ -14,7 +14,7 @@ layout (location = 8) in vec4 normalMatrixRow2;
 
 layout (location = 9) in vec4 color;
 
-out vec2 i_TexCoord;
+out vec2 i_texCoord;
 out vec4 i_color;
 out vec4 i_position;
 out vec4 i_normal;
@@ -33,7 +33,7 @@ void main()
     mat4 normalMatrix = RowsToMatrix(normalMatrixRow0, normalMatrixRow1, normalMatrixRow2);
 
     i_position = modelMatrix * vec4(position, 1.0f);
-    i_TexCoord = texCoord;
+    i_texCoord = texCoord;
 
     i_normal = normalMatrix * vec4(normal, 1.0f);
 

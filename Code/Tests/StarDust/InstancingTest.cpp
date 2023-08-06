@@ -4,8 +4,8 @@
 #include <StarDust/Model/ModelInstance.h>
 #include <StarDust/Shader/ShaderProgramRegistry.h>
 #include <StarDust/Utilities/Math.h>
+#include <Universal/Math/Math.h>
 #include <Universal/Math/Random/Generator.h>
-#include <glm/gtc/matrix_transform.hpp>
 #include <imgui.h>
 
 InstancingTest::InstancingTest()
@@ -40,16 +40,16 @@ InstancingTest::InstancingTest()
             transform,
             Uni::Grpx::Color::CreateFromVector3f(
                 Uni::Math::Vector3f::CreateRandomUnitVector(generator) * 2.0f,
-                1.0f));
+                generator.GenerateInRange(0.5f, 2.0f)));
 
         m_velocities.emplace_back(
             Uni::Math::Vector3f::CreateRandomUnitVector(generator) * 0.01f);
     }
 
     m_viewMatrix = Star::Utils::CreateLookAtMatrix(
-                       Uni::Math::Vector3f::CreateZero(),
-                       Uni::Math::Vector3f::CreateAxisX(),
-                       Uni::Math::Vector3f::CreateAxisZ());
+        Uni::Math::Vector3f::CreateZero(),
+        Uni::Math::Vector3f::CreateAxisX(),
+        Uni::Math::Vector3f::CreateAxisZ());
 }
 
 void InstancingTest::OnUpdate(float deltaTime)
@@ -102,7 +102,7 @@ void InstancingTest::OnUpdate(float deltaTime)
 void InstancingTest::OnRender(Star::Window& window)
 {
     m_projectionMatrix = Star::Utils::CreatePerspectiveProjectionMatrix(
-        glm::radians(m_fieldOfView),
+        Uni::Math::Constants::DegToRad * m_fieldOfView,
         static_cast<float>(window.GetWidth()) /
             static_cast<float>(window.GetHeight()),
         0.1f,

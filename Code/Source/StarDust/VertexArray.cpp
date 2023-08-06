@@ -1,5 +1,6 @@
-#include <StarDust/VertexArray.h>
 #include <StarDust/Utilities/Utils.h>
+#include <StarDust/VertexArray.h>
+#include <glad/glad.h>
 
 namespace Star
 {
@@ -52,13 +53,12 @@ namespace Star
                 element.type,
                 element.normalized,
                 layout.GetStride(),
-                (const void*)offset));
+                reinterpret_cast<const void*>(offset)));
             if (baseIndex != 0)
             {
                 GL_CHECK(glVertexAttribDivisor(index, 1));
             }
             offset += element.count * Utils::GetSizeOfType(element.type);
         }
-
     }
 } // namespace Star

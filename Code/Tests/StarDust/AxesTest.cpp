@@ -4,7 +4,6 @@
 #include <StarDust/Shader/ShaderProgramRegistry.h>
 #include <StarDust/Utilities/Math.h>
 #include <Universal/Math/Math.h>
-#include <glm/gtc/matrix_transform.hpp>
 #include <imgui.h>
 
 AxesTest::AxesTest()

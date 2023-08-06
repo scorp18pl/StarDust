@@ -2,6 +2,7 @@
 #include <StarDust/Renderer.h>
 #include <StarDust/Shader/ShaderProgramRegistry.h>
 #include <StarDust/Utilities/Utils.h>
+#include <glad/glad.h>
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_opengl3.h>
 

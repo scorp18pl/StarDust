@@ -2,6 +2,7 @@
 
 #include "TestScene.h"
 #include <Universal/Algorithm/Noise/PerlinNoiseGenerator2D.h>
+#include <StarDust/LightSource.h>
 
 class TerrainGenerationTest : public TestScene
 {
@@ -17,5 +18,6 @@ private:
     Uni::Alg::Noise::PerlinNoiseGenerator2D m_noiseGenerator;
     unsigned int m_width{100}, m_height{100};
     int m_meshId, m_instanceId;
+    Star::LightSource m_lightSource;
     Star::Model m_model;
 };

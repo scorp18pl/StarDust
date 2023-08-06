@@ -2,7 +2,6 @@
 
 #include "Test.h"
 #include <StarDust/Model/MeshRegistry.h>
-#include <glm/mat4x4.hpp>
 
 class MeshTest : public Test
 {

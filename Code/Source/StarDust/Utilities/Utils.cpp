@@ -1,4 +1,5 @@
 #include <StarDust/Utilities/Utils.h>
+#include <config.h>
 #include <glad/glad.h>
 #include <iostream>
 #include <string>
@@ -58,11 +59,6 @@ namespace Star
 
     std::filesystem::path Utils::GetResourcesPath()
     {
-        std::filesystem::path currentFilePath{ __FILE__ };
-        std::filesystem::path currentDirectoryPath =
-            currentFilePath.parent_path();
-
-        return currentDirectoryPath.parent_path().parent_path().parent_path().parent_path() /
-            "Resources";
+        return std::filesystem::path(RESOURCES_PATH) / "Stardust";
     }
 } // namespace Star

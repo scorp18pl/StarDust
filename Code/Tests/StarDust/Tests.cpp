@@ -1,5 +1,6 @@
 #include "Test.h"
 #include <StarDust/Shader/ShaderProgramRegistry.h>
+#include <StarDust/Utilities/Utils.h>
 #include <StarDust/Window.h>
 #include <Universal/Graphics/ColorPalette.h>
 #include <Universal/System/Clock.h>
@@ -27,17 +28,17 @@ int main()
     float pointLightLinear = 0.09f;
     float pointLightQuadratic = 0.032f;
 
+    const std::filesystem::path PalettePath =
+        Star::Utils::GetResourcesPath() / "Palettes";
+
     std::vector<Uni::Grpx::ColorPalette> colorPalettes = {
         Uni::Grpx::ColorPalette::LoadFromFile(
-            "../../../../Resources/Palettes/cretaceous-16.hex"),
+            PalettePath / "cretaceous-16.hex"),
+        Uni::Grpx::ColorPalette::LoadFromFile(PalettePath / "apollo.hex"),
+        Uni::Grpx::ColorPalette::LoadFromFile(PalettePath / "endesga-32.hex"),
+        Uni::Grpx::ColorPalette::LoadFromFile(PalettePath / "resurrect-64.hex"),
         Uni::Grpx::ColorPalette::LoadFromFile(
-            "../../../../Resources/Palettes/apollo.hex"),
-        Uni::Grpx::ColorPalette::LoadFromFile(
-            "../../../../Resources/Palettes/endesga-32.hex"),
-        Uni::Grpx::ColorPalette::LoadFromFile(
-            "../../../../Resources/Palettes/resurrect-64.hex"),
-        Uni::Grpx::ColorPalette::LoadFromFile(
-            "../../../../Resources/Palettes/universalis-42.hex"),
+            PalettePath / "universalis-42.hex"),
     };
     unsigned int currentColorPalette = colorPalettes.size() - 1;
 
@@ -49,7 +50,7 @@ int main()
     float elapsedTime = 0.0f;
     while (window.IsOpen())
     {
-        window.Update();
+        window.Clear();
         window.SetPixelizationFactor(pixelizationFactor);
 
         Star::ShaderProgramRegistry::Get()
@@ -172,6 +173,6 @@ int main()
         }
         ImGui::End();
 
-        window.Clear();
+        window.Update();
     }
 }

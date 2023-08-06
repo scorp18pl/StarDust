@@ -2,7 +2,6 @@
 
 #include "Test.h"
 
-#include <glm/mat4x4.hpp>
 #include <Universal/Math/Matrix/Matrix4x4f.h>
 
 class InstancingTest : public Test

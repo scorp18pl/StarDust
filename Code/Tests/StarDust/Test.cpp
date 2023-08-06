@@ -1,6 +1,7 @@
 #include "Test.h"
 #include "AxesTest.h"
 #include "CubeGameTest.h"
+#include "GameOfLifeTest.h"
 #include "InstancingTest.h"
 #include "MeshTest.h"
 #include "TerrainGenerationTest.h"
@@ -12,6 +13,7 @@ const std::map<Test::TestType, std::string> Test::TestTypeMap{
     { Test::TestType::Scene, "Scene" },
     { Test::TestType::TerrainGeneration, "Terrain Generation" },
     { Test::TestType::CubeGame, "Cube Game" },
+    { Test::TestType::GameOfLife, "Game of Life" },
 };
 
 Test::Test(Test::TestType type)
@@ -35,6 +37,8 @@ Test* Test::CreateTest(Test::TestType type)
         return new TerrainGenerationTest();
     case TestType::CubeGame:
         return new CubeGameTest();
+    case TestType::GameOfLife:
+        return new GameOfLifeTest();
     default:
         return nullptr;
     }
