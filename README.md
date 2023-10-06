@@ -33,11 +33,12 @@ cd StarDust
 ```
 2. Create a build directory and proceed to it
 ```bash
+cd Code
 mkdir build && cd build
 ```
 3. Install the library with CMake
 ```bash
-cmake ../Code -DCMAKE_BUILD_TYPE=Release
+cmake .. -DCMAKE_BUILD_TYPE=Release
 sudo make install
 ```
 
