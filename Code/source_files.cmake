@@ -1,0 +1,22 @@
+set(SOURCE_FILES
+        Source/StarDust/Window.cpp
+        Source/StarDust/Buffer/VertexBuffer.cpp
+        Source/StarDust/Buffer/IndexBuffer.cpp
+        Source/StarDust/VertexArray.cpp
+        Source/StarDust/Shader/ShaderProgram.cpp
+        Source/StarDust/Utilities/Utils.cpp
+        Source/StarDust/Buffer/VertexBufferLayout.cpp
+        Source/StarDust/Texture.cpp
+        Source/StarDust/Buffer/FrameBuffer.cpp
+        Source/StarDust/Renderer.cpp
+        Source/StarDust/Shader/ShaderProgramRegistry.cpp
+        Source/StarDust/Model/MeshRegistry.cpp
+        Source/StarDust/Model/Mesh.cpp
+        Source/StarDust/Model/Model.cpp
+        Source/StarDust/Model/ModelInstance.cpp
+        Source/StarDust/Buffer/RenderBuffer.cpp
+        Tests/StarDust/Tests.cpp
+        Source/StarDust/LightSource.cpp
+        Source/StarDust/Model/ModelInstanceSystem.cpp
+        Source/StarDust/Utilities/Math.cpp
+    )

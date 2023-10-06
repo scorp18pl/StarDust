@@ -1,7 +1,7 @@
 # Stardust
 
 <h1 align="center">
-  <img src="static/stardust-logo-name.png" width="100%" alt="Universal">
+  <img src="Media/stardust-logo-name.png" width="100%" alt="Universal">
 </h1>
 
 ## Goals and Features
@@ -37,7 +37,7 @@ mkdir build && cd build
 ```
 3. Install the library with CMake
 ```bash
-cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake ../Code -DCMAKE_BUILD_TYPE=Release
 sudo make install
 ```
 

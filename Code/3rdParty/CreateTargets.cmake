@@ -1,4 +1,4 @@
-set(3RD_PARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Code/3rdParty)
+set(3RD_PARTY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/3rdParty)
 
 find_package(OpenGL REQUIRED)
 find_library(UNIVERSAL universal)
