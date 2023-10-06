@@ -1,6 +1,7 @@
 #include "GameOfLifeTest.h"
 #include <StarDust/Model/MeshRegistry.h>
-#include <StarDust/Shader/ShaderProgramRegistry.h>
+#include <StarDust/Renderer.h>
+#include <StarDust/Shader/ShaderProgram.h>
 #include <StarDust/Utilities/Math.h>
 #include <Universal/Math/Random/Generator.h>
 #include <imgui.h>
@@ -14,9 +15,8 @@ GameOfLifeTest::Board::Board(unsigned int width, unsigned int height)
     Uni::Math::Rand::Generator generator;
     for (size_t i = 0; i < m_width * m_height; ++i)
     {
-        m_currentCells[i] = generator.GenerateInRange(0, 1) == 0
-            ? CellState::Dead
-            : CellState::Alive;
+        m_currentCells[i] =
+            generator.GenerateInRange(0, 1) == 0 ? CellState::Dead : CellState::Alive;
     }
 }
 
@@ -63,8 +63,7 @@ void GameOfLifeTest::Board::Update()
     m_currentCells = m_nextCells;
 }
 
-GameOfLifeTest::CellState GameOfLifeTest::Board::GetCellState(
-    unsigned int x, unsigned int y) const
+GameOfLifeTest::CellState GameOfLifeTest::Board::GetCellState(unsigned int x, unsigned int y) const
 {
     // not valid for values less than -dimension.
     x = (x + m_width) % m_width;
@@ -101,13 +100,11 @@ GameOfLifeTest::GameOfLifeTest()
     , m_board(128U, 128U)
     , m_bitmap(m_board.GetWidth(), m_board.GetHeight(), Uni::Grpx::Channel::Alpha)
 {
-    m_texture = Star::Texture(
-        m_bitmap.GetData(), m_bitmap.GetWidth(), m_bitmap.GetHeight());
+    m_texture = Star::Texture(m_bitmap.GetData(), m_bitmap.GetWidth(), m_bitmap.GetHeight());
 
     m_texture.Bind(1);
 
-    Star::ShaderProgram& shader =
-        Star::ShaderProgramRegistry::Get().GetShaderProgram("model_instance");
+    Star::ShaderProgram& shader = Star::Renderer::Get().GetUsedShaderProgram();
     shader.Bind();
 
     shader.SetUniformMat4x4f("u_view", m_viewMatrix);
@@ -155,19 +152,11 @@ void GameOfLifeTest::OnUpdate(float deltaTime)
         }
     }
 
-    m_texture.SetData(
-        m_bitmap.GetData(), m_bitmap.GetWidth(), m_bitmap.GetHeight());
+    m_texture.SetData(m_bitmap.GetData(), m_bitmap.GetWidth(), m_bitmap.GetHeight());
 }
 
-void GameOfLifeTest::OnRender(Star::Window& window)
-{
-}
+void GameOfLifeTest::OnRender(Star::Window& window) {}
 
-void GameOfLifeTest::OnImGuiRender()
-{
-    ImGui::Checkbox("Paused", &m_isPaused);
-}
+void GameOfLifeTest::OnImGuiRender() { ImGui::Checkbox("Paused", &m_isPaused); }
 
-GameOfLifeTest::~GameOfLifeTest()
-{
-}
+GameOfLifeTest::~GameOfLifeTest() {}

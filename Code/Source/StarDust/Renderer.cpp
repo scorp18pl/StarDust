@@ -8,10 +8,10 @@
 
 namespace Star
 {
-    Renderer& Renderer::Get()
+    ShaderProgram& Renderer::GetUsedShaderProgram() const
     {
-        static Renderer renderer;
-        return renderer;
+        return ShaderProgramRegistry::Get().GetShaderProgram(
+            m_optionFlags & OptionFlag::Lighting ? "model_instance_lighting" : "model_instance");
     }
 
     int Renderer::RegisterLightSource(LightSourceType type)
@@ -36,8 +36,7 @@ namespace Star
         m_lightSources[type].m_idToDataMap.erase(pointLightId);
     }
 
-    LightData& Renderer::GetLightSourceData(
-        LightSourceType type, int pointLightId)
+    LightData& Renderer::GetLightSourceData(LightSourceType type, int pointLightId)
     {
         return m_lightSources[type].m_idToDataMap[pointLightId];
     }
@@ -52,29 +51,25 @@ namespace Star
         GL_CHECK(glClearColor(0.07f, 0.13f, 0.17f, 1.0f));
         GL_CHECK(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-        ShaderProgram& instanceShader =
-            ShaderProgramRegistry::Get().GetShaderProgram("model_instance");
-        instanceShader.Bind();
-        UpdatePointLightUniforms(instanceShader, LightSourceType::Point);
-        UpdatePointLightUniforms(instanceShader, LightSourceType::Directional);
+        if (m_optionFlags & OptionFlag::Lighting)
+        {
+            ShaderProgram& instanceShader = GetUsedShaderProgram();
+
+            UpdatePointLightUniforms(instanceShader, LightSourceType::Point);
+            UpdatePointLightUniforms(instanceShader, LightSourceType::Directional);
+        }
 
         ModelInstanceSystem::Get().Render();
         FrameBuffer::Unbind();
 
         GL_CHECK(glViewport(0, 0, m_windowWidth, m_windowHeight));
 
-        ShaderProgram& postProcShader =
-            ShaderProgramRegistry::Get().GetShaderProgram("pixelate");
+        ShaderProgram& postProcShader = ShaderProgramRegistry::Get().GetShaderProgram("pixelate");
         postProcShader.Bind();
         postProcShader.SetUniform1i("screenTexture", 0);
         GL_CHECK(glDisable(GL_DEPTH_TEST));
         m_pixelizationTexture.Bind();
         FrameBuffer::Draw();
-    }
-
-    void Renderer::SetPostprocessingFlags(PostProcFlag flags)
-    {
-        m_postProcFlags = flags;
     }
 
     void Renderer::SetPixelizationResolution(
@@ -102,17 +97,13 @@ namespace Star
     {
         m_renderBuffer.SetStorage(GL_DEPTH24_STENCIL8, 1, 1);
 
-        m_frameBuffer.AttachTexture(
-            m_pixelizationTexture, GL_COLOR_ATTACHMENT0);
-        m_frameBuffer.AttachRenderBuffer(
-            m_renderBuffer, GL_DEPTH_STENCIL_ATTACHMENT);
+        m_frameBuffer.AttachTexture(m_pixelizationTexture, GL_COLOR_ATTACHMENT0);
+        m_frameBuffer.AttachRenderBuffer(m_renderBuffer, GL_DEPTH_STENCIL_ATTACHMENT);
     }
 
-    void Renderer::UpdatePointLightUniforms(
-        ShaderProgram& shader, LightSourceType type)
+    void Renderer::UpdatePointLightUniforms(ShaderProgram& shader, LightSourceType type)
     {
-        const std::string lightTypeStr =
-            (type == LightSourceType::Point) ? "point" : "directional";
+        const std::string lightTypeStr = (type == LightSourceType::Point) ? "point" : "directional";
 
         shader.SetUniform1i(
             std::string("u_" + lightTypeStr + "LightCount").c_str(),
@@ -121,8 +112,8 @@ namespace Star
         int i = 0;
         for (auto& pointLight : m_lightSources[type].m_idToDataMap)
         {
-            std::string prefix = std::string("u_" + lightTypeStr + "Lights[") +
-                std::to_string(i) + "].";
+            std::string prefix =
+                std::string("u_" + lightTypeStr + "Lights[") + std::to_string(i) + "].";
             shader.SetUniform3f(
                 (prefix + "vector").c_str(),
                 pointLight.second.m_vector.m_x,
@@ -134,8 +125,7 @@ namespace Star
                 pointLight.second.m_color.m_y,
                 pointLight.second.m_color.m_z,
                 pointLight.second.m_color.m_w);
-            shader.SetUniform1f(
-                (prefix + "intensity").c_str(), pointLight.second.m_intensity);
+            shader.SetUniform1f((prefix + "intensity").c_str(), pointLight.second.m_intensity);
             ++i;
         }
     }

@@ -1,6 +1,6 @@
 #include <StarDust/Model/MeshRegistry.h>
 #include <StarDust/Shader/ShaderProgram.h>
-#include <StarDust/Shader/ShaderProgramRegistry.h>
+#include <StarDust/Renderer.h>
 #include <StarDust/Utilities/Math.h>
 #include <Universal/Math/Math.h>
 #include <imgui.h>
@@ -20,15 +20,12 @@ MeshTest::MeshTest()
     m_instance = Star::ModelInstance(
         m_currentMeshId,
         Uni::Math::Transform(),
-        Uni::Grpx::Color::CreateFromVector3f(
-            Uni::Math::Vector3f{ 1.0f }, 1.0f));
+        Uni::Grpx::Color::CreateFromVector3f(Uni::Math::Vector3f{ 1.0f }, 1.0f));
 
     m_viewMatrix = Star::Utils::CreateLookAtMatrix(
         Uni::Math::Vector3f::CreateAxisX() * 20.0f,
         Uni::Math::Vector3f::CreateZero(),
         Uni::Math::Vector3f::CreateAxisZ());
-
-
 }
 
 void MeshTest::OnUpdate(float deltaTime)
@@ -36,10 +33,8 @@ void MeshTest::OnUpdate(float deltaTime)
     m_instance.GetTransform().SetTranslation(m_translation);
     if (m_rotationEnabled)
     {
-        m_instance.GetTransform().Rotate(
-            Uni::Math::Quaternion::CreateFromAxisRad(
-                m_rotSpeed * m_speedMultiplier * deltaTime,
-                Uni::Math::Vector3f::CreateAxisZ()));
+        m_instance.GetTransform().Rotate(Uni::Math::Quaternion::CreateFromAxisRad(
+            m_rotSpeed * m_speedMultiplier * deltaTime, Uni::Math::Vector3f::CreateAxisZ()));
     }
     else
     {
@@ -57,13 +52,11 @@ void MeshTest::OnRender(Star::Window& window)
 {
     m_projectionMatrix = Star::Utils::CreatePerspectiveProjectionMatrix(
         60.0f * Uni::Math::Constants::DegToRad,
-        static_cast<float>(window.GetWidth()) /
-            static_cast<float>(window.GetHeight()),
+        static_cast<float>(window.GetWidth()) / static_cast<float>(window.GetHeight()),
         0.1f,
         100.0f);
 
-    Star::ShaderProgram& shader =
-        Star::ShaderProgramRegistry::Get().GetShaderProgram("model_instance");
+    Star::ShaderProgram& shader = Star::Renderer::Get().GetUsedShaderProgram();
     shader.Bind();
 
     shader.SetUniformMat4x4f("u_view", m_viewMatrix);
@@ -72,30 +65,25 @@ void MeshTest::OnRender(Star::Window& window)
 
 void MeshTest::OnImGuiRender()
 {
-    if (ImGui::BeginCombo(
-            "PrimitiveType", m_currentName.c_str(), ImGuiComboFlags_None))
+    if (ImGui::BeginCombo("PrimitiveType", m_currentName.c_str(), ImGuiComboFlags_None))
     {
-        for (const auto& [meshId, mesh] :
-             Star::MeshRegistry::Get().GetRegisteredMeshes())
+        for (const auto& [meshId, mesh] : Star::MeshRegistry::Get().GetRegisteredMeshes())
         {
             bool isSelected = (m_currentName == mesh.m_name);
-            if (ImGui::Selectable(
-                    mesh.m_name.c_str(), isSelected, ImGuiSelectableFlags_None))
+            if (ImGui::Selectable(mesh.m_name.c_str(), isSelected, ImGuiSelectableFlags_None))
             {
                 m_currentName = mesh.m_name;
                 m_currentMeshId = meshId;
                 m_instance = Star::ModelInstance(
                     m_currentMeshId,
                     Uni::Math::Transform(),
-                    Uni::Grpx::Color::CreateFromVector3f(
-                        Uni::Math::Vector3f{ 1.0f }, 1.0f));
+                    Uni::Grpx::Color::CreateFromVector3f(Uni::Math::Vector3f{ 1.0f }, 1.0f));
             }
         }
         ImGui::EndCombo();
     }
 
-    ImGui::SliderFloat3(
-        "Translation (Meters)", &m_translation.m_x, -20.0f, 20.0f);
+    ImGui::SliderFloat3("Translation (Meters)", &m_translation.m_x, -20.0f, 20.0f);
     if (ImGui::Button("Reset Translation"))
     {
         m_translation = Uni::Math::Vector3f::CreateZero();
@@ -107,8 +95,7 @@ void MeshTest::OnImGuiRender()
         m_rotation = Uni::Math::Vector3f::CreateZero();
     }
 
-    if (ImGui::Button(
-            m_rotationEnabled ? "Disable Rotation" : "Enable Rotation"))
+    if (ImGui::Button(m_rotationEnabled ? "Disable Rotation" : "Enable Rotation"))
     {
         m_rotationEnabled = !m_rotationEnabled;
     }
@@ -120,6 +107,5 @@ void MeshTest::OnImGuiRender()
 
     ImGui::SliderFloat("Scale", &m_scale, 1.0f, 30.0f);
 
-    ImGui::ColorEdit4(
-        "Color", static_cast<float*>(static_cast<void*>(&m_color)));
+    ImGui::ColorEdit4("Color", static_cast<float*>(static_cast<void*>(&m_color)));
 }
