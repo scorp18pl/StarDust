@@ -15,7 +15,7 @@ public:
     void OnImGuiRender() override;
 
 protected:
-    std::vector<Star::ModelInstance> m_instances;
+    std::vector<Star::ModelInstance3D> m_instances;
     float m_deltaTime = 1.0f;
     unsigned int m_currentInstance = 0U;
 

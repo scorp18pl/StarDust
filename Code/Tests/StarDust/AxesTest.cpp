@@ -1,6 +1,6 @@
 #include "AxesTest.h"
 
-#include <StarDust/Model/ModelInstance.h>
+#include <StarDust/Model/ModelInstance3D.h>
 #include <StarDust/Renderer.h>
 #include <StarDust/Shader/ShaderProgram.h>
 #include <StarDust/Utilities/Math.h>

@@ -88,7 +88,7 @@ GameOfLifeTest::GameOfLifeTest()
           Uni::Math::Vector3f::CreateAxisX(),
           Uni::Math::Vector3f::CreateZero(),
           Uni::Math::Vector3f::CreateAxisZ()) }
-    , m_instance{ Star::MeshRegistry::Get().GetMeshId("Rectangle"),
+    , m_instance{ Star::Mesh::GetId("Rectangle"),
                   Uni::Math::Transform(),
                   Uni::Grpx::Color::White, }
     , m_lightSource{ Star::LightSourceType::Directional,

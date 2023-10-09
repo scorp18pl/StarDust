@@ -68,8 +68,8 @@ TerrainGenerationTest::TerrainGenerationTest()
             mesh.m_indices.push_back(mesh.m_vertices.size() - 1);
         }
     }
-    m_meshId = Star::MeshRegistry::Get().RegisterMesh(mesh);
-    m_instances.emplace_back(m_meshId);
+    Star::MeshRegistry::Get().RegisterMesh(mesh);
+    m_instances.emplace_back(mesh.GetId());
 }
 
 void TerrainGenerationTest::OnUpdate(float deltaTime)
@@ -89,5 +89,5 @@ void TerrainGenerationTest::OnImGuiRender()
 
 TerrainGenerationTest::~TerrainGenerationTest()
 {
-    Star::MeshRegistry::Get().UnregisterMesh(m_meshId);
+    Star::MeshRegistry::Get().UnregisterMesh("Terrain");
 }

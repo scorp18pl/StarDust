@@ -22,8 +22,9 @@ TestScene::TestScene(TestType testType)
     m_lights.emplace_back(
         Star::Renderer::Get().RegisterLightSource(Star::LightSourceType::Directional),
         Star::LightSourceType::Directional);
-    Star::Renderer::Get().GetLightSourceData(Star::LightSourceType::Directional, m_lights[m_currentLight].first).m_vector =
-        Uni::Math::Vector3f{ 0.0f, -0.7f, -0.7f };
+    Star::Renderer::Get()
+        .GetLightSourceData(Star::LightSourceType::Directional, m_lights[m_currentLight].first)
+        .m_vector = Uni::Math::Vector3f{ 0.0f, -0.7f, -0.7f };
 }
 
 void TestScene::OnUpdate(float deltaTime) { m_deltaTime = deltaTime; }
@@ -124,7 +125,7 @@ void TestScene::OnImGuiRender()
             {
                 m_currentInstance = m_instances.size();
                 m_instances.emplace_back(
-                    Star::MeshRegistry::Get().GetMeshId("Icosahedron"),
+                    Star::Mesh::GetId("Icosahedron"),
                     Uni::Math::Transform(),
                     Uni::Grpx::Color::White);
             }

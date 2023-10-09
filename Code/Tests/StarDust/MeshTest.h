@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Test.h"
-#include <StarDust/Model/MeshRegistry.h>
+#include <StarDust/Model/Mesh.h>
 
 class MeshTest : public Test
 {
@@ -29,9 +29,9 @@ private:
 
     std::string m_currentName = "Triangle";
     Star::Mesh::IdType m_currentMeshId =
-        Star::MeshRegistry::Get().GetMeshId(m_currentName);
+        Star::Mesh::GetId(m_currentName);
 
-    Star::ModelInstance m_instance = Star::ModelInstance(
+    Star::ModelInstance3D m_instance = Star::ModelInstance3D(
         m_currentMeshId,
         Uni::Math::Transform(),
         Uni::Grpx::Color::CreateFromVector3f(

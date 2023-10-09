@@ -1,5 +1,5 @@
 #include <StarDust/Model/Model.h>
-#include <StarDust/Model/ModelInstance.h>
+#include <StarDust/Model/ModelInstance3D.h>
 #include <glad/glad.h>
 
 #include <utility>
@@ -23,19 +23,14 @@ namespace Star
         instanceLayout.Push<Uni::Math::Vector4f>(1); // modelMatrixRow2
         instanceLayout.Push<Uni::Math::Vector4f>(1); // color
 
-        m_vertexBuffer.SetData(
-            m_mesh.m_vertices.data(),
-            m_mesh.m_vertices.size() * sizeof(Vertex));
+        m_vertexBuffer.SetData(m_mesh.m_vertices.data(), m_mesh.m_vertices.size() * sizeof(Vertex));
         m_indexBuffer.SetData(m_mesh.m_indices.data(), m_mesh.m_indices.size());
 
         m_vertexArray.AddBuffer(m_vertexBuffer, defaultLayout);
         m_vertexArray.AddBuffer(m_instanceParametersBuffer, instanceLayout, 3);
     }
 
-    Model::Model(const Model& other)
-    {
-        (*this) = other;
-    }
+    Model::Model(const Model& other) { (*this) = other; }
 
     Model::Model(Model&& other) noexcept
         : m_mesh{ std::move(other.m_mesh) }
@@ -69,9 +64,7 @@ namespace Star
         instanceLayout.Push<Uni::Math::Vector4f>(1); // color
 
         m_mesh = other.m_mesh;
-        m_vertexBuffer.SetData(
-            m_mesh.m_vertices.data(),
-            m_mesh.m_vertices.size() * sizeof(Vertex));
+        m_vertexBuffer.SetData(m_mesh.m_vertices.data(), m_mesh.m_vertices.size() * sizeof(Vertex));
         m_indexBuffer.SetData(m_mesh.m_indices.data(), m_mesh.m_indices.size());
 
         m_vertexArray.AddBuffer(m_vertexBuffer, defaultLayout);
@@ -80,28 +73,18 @@ namespace Star
         return *this;
     }
 
-    const Mesh& Model::GetMesh() const
-    {
-        return m_mesh;
-    }
+    const Mesh& Model::GetMesh() const { return m_mesh; }
 
-    Mesh& Model::GetMesh()
-    {
-        return m_mesh;
-    }
+    Mesh& Model::GetMesh() { return m_mesh; }
 
-    void Model::RenderInstances(std::vector<ModelInstanceData>& instances)
+    void Model::RenderInstances(std::vector<ModelInstance::Data>& instances)
     {
         m_instanceParametersBuffer.SetData(
-            instances.data(), instances.size() * sizeof(ModelInstanceData));
+            instances.data(), instances.size() * sizeof(ModelInstance::Data));
 
         m_vertexArray.Bind();
         m_indexBuffer.Bind();
         glDrawElementsInstanced(
-            GL_TRIANGLES,
-            m_mesh.m_indices.size(),
-            GL_UNSIGNED_INT,
-            nullptr,
-            instances.size());
+            GL_TRIANGLES, m_mesh.m_indices.size(), GL_UNSIGNED_INT, nullptr, instances.size());
     }
 } // namespace Star

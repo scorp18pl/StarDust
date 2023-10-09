@@ -19,7 +19,10 @@ add_executable(${PROJECT_NAME} Tests.cpp
         CubeGameTest.cpp
         CubeGameTest.h
         GameOfLifeTest.cpp
-        GameOfLifeTest.h)
+        GameOfLifeTest.h
+        SpriteTest.cpp
+        SpriteTest.h
+        )
 
 target_include_directories(${PROJECT_NAME} PRIVATE ../../3rdParty/glm)
 target_include_directories(${PROJECT_NAME} PRIVATE .)

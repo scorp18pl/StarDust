@@ -23,7 +23,7 @@ CubeGameTest::CubeGameTest()
             transform.SetScale(Uni::Math::Vector3f{ CubeSideLength });
 
             m_instances.emplace_back(
-                Star::MeshRegistry::Get().GetMeshId("Box"),
+                Star::Mesh::GetId("Box"),
                 transform,
                 transform.GetTranslation().m_z < 0.0f
                     ? Uni::Grpx::Color::CreateFromUint8(194, 178, 128)
@@ -46,7 +46,7 @@ CubeGameTest::CubeGameTest()
     });
 
     m_instances.emplace_back(
-        Star::MeshRegistry::Get().GetMeshId("Rectangle"),
+        Star::Mesh::GetId("Rectangle"),
         waterTransform,
         Uni::Grpx::Color::CreateFromUint8(14, 135, 204, 120));
 }
