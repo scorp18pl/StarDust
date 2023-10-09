@@ -1,7 +1,8 @@
 #include "AxesTest.h"
 
 #include <StarDust/Model/ModelInstance.h>
-#include <StarDust/Shader/ShaderProgramRegistry.h>
+#include <StarDust/Renderer.h>
+#include <StarDust/Shader/ShaderProgram.h>
 #include <StarDust/Utilities/Math.h>
 #include <Universal/Math/Math.h>
 #include <imgui.h>
@@ -80,8 +81,7 @@ void AxesTest::OnRender(Star::Window& window)
         Uni::Math::Vector3f::CreateZero(),
         Uni::Math::Vector3f::CreateAxisZ());
 
-    Star::ShaderProgram& shader =
-        Star::ShaderProgramRegistry::Get().GetShaderProgram("model_instance");
+    Star::ShaderProgram& shader = Star::Renderer::Get().GetUsedShaderProgram();
     shader.Bind();
     shader.SetUniformMat4x4f("u_view", m_viewMatrix);
     shader.SetUniformMat4x4f("u_proj", m_projectionMatrix);
@@ -90,14 +90,12 @@ void AxesTest::OnRender(Star::Window& window)
 void AxesTest::OnImGuiRender()
 {
     Uni::Math::Vector3f rotationDegrees =
-        m_rootTransform.GetRotation().GetEulerRadZYX() *
-        Uni::Math::Constants::RadToDeg;
+        m_rootTransform.GetRotation().GetEulerRadZYX() * Uni::Math::Constants::RadToDeg;
     Uni::Math::Vector3f translation = m_rootTransform.GetTranslation();
 
     ImGui::Text("Coordinate system (X - Red, Y - Green, Z - Blue)");
     ImGui::SliderFloat3("Rotation (Deg.):", rotationDegrees.m_data, 0.0f, 90.0f);
-    ImGui::SliderFloat3(
-        "Translation (Meters):", translation.m_data, -20.0f, 20.0f);
+    ImGui::SliderFloat3("Translation (Meters):", translation.m_data, -20.0f, 20.0f);
 
     m_rootTransform.SetRotation(Uni::Math::Quaternion::CreateFromEulerRadZYX(
         rotationDegrees * Uni::Math::Constants::DegToRad));

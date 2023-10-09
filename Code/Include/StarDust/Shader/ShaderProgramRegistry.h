@@ -13,16 +13,19 @@ namespace Star
 
         //! Register a shader program.
         //! @param shaderPath The path to the directory of the shader.
-        //! @param shaderName The name of the shader (file name without extension).
-        void Register(const std::string& shaderPath,
-            const std::string& shaderName);
+        //! @param shaderName The name of the shader (file name without
+        //! extension).
+        void Register(
+            const std::string& shaderPath,
+            const std::string& vertexShaderName,
+            const std::string& fragmentShaderName = "");
 
         //! Get a shader program.
         ShaderProgram& GetShaderProgram(const std::string& name);
+
     private:
         ShaderProgramRegistry();
 
-        std::unordered_map<std::string, ShaderProgram>
-            m_registeredShaders;
+        std::unordered_map<std::string, ShaderProgram> m_registeredShaders;
     };
 } // namespace Star

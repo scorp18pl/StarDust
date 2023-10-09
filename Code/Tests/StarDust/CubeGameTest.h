@@ -15,5 +15,6 @@ public:
 
 private:
     Uni::Alg::Noise::PerlinNoiseGenerator2D m_noiseGenerator;
+
     unsigned int m_width{1000}, m_height{1000};
 };

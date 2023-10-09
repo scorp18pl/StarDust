@@ -2,7 +2,8 @@
 
 #include <StarDust/Model/MeshRegistry.h>
 #include <StarDust/Model/ModelInstance.h>
-#include <StarDust/Shader/ShaderProgramRegistry.h>
+#include <StarDust/Renderer.h>
+#include <StarDust/Shader/ShaderProgram.h>
 #include <StarDust/Utilities/Math.h>
 #include <Universal/Math/Math.h>
 #include <Universal/Math/Random/Generator.h>
@@ -42,8 +43,7 @@ InstancingTest::InstancingTest()
                 Uni::Math::Vector3f::CreateRandomUnitVector(generator) * 2.0f,
                 generator.GenerateInRange(0.5f, 2.0f)));
 
-        m_velocities.emplace_back(
-            Uni::Math::Vector3f::CreateRandomUnitVector(generator) * 0.01f);
+        m_velocities.emplace_back(Uni::Math::Vector3f::CreateRandomUnitVector(generator) * 0.01f);
     }
 
     m_viewMatrix = Star::Utils::CreateLookAtMatrix(
@@ -60,56 +60,48 @@ void InstancingTest::OnUpdate(float deltaTime)
     for (auto& instance : m_instances)
     {
         Uni::Math::Quaternion rotation =
-            Uni::Math::Quaternion::CreateFromAxisRad(
-                m_rotSpeed * 0.001f * deltaTime, RotationAxis);
+            Uni::Math::Quaternion::CreateFromAxisRad(m_rotSpeed * 0.001f * deltaTime, RotationAxis);
 
-        const Uni::Math::Vector3f currentTranslation =
-            instance.GetTransform().GetTranslation();
+        const Uni::Math::Vector3f currentTranslation = instance.GetTransform().GetTranslation();
 
-        if (currentTranslation.m_x > MaxBound.m_x ||
-            currentTranslation.m_x < MinBound.m_x)
+        if (currentTranslation.m_x > MaxBound.m_x || currentTranslation.m_x < MinBound.m_x)
         {
             m_velocities[&instance - &m_instances[0]].m_x *= -1.0f;
         }
 
-        if (currentTranslation.m_y > MaxBound.m_y ||
-            currentTranslation.m_y < MinBound.m_y)
+        if (currentTranslation.m_y > MaxBound.m_y || currentTranslation.m_y < MinBound.m_y)
         {
             m_velocities[&instance - &m_instances[0]].m_y *= -1.0f;
         }
 
-        if (currentTranslation.m_z > MaxBound.m_z ||
-            currentTranslation.m_z < MinBound.m_z)
+        if (currentTranslation.m_z > MaxBound.m_z || currentTranslation.m_z < MinBound.m_z)
         {
             m_velocities[&instance - &m_instances[0]].m_z *= -1.0f;
         }
 
         instance.GetTransform().Rotate(rotation);
         instance.GetTransform().Translate(
-            { m_velocities[&instance - &m_instances[0]] * m_speedMultiplier *
-              deltaTime });
+            { m_velocities[&instance - &m_instances[0]] * m_speedMultiplier * deltaTime });
 
         instance.Update();
     }
 
-    m_viewMatrix = (Uni::Math::Quaternion::CreateFromAxisRad(
-                        m_rotSpeed * 0.001f * deltaTime, RotationAxis)
-                        .GetMatrix() *
-                    m_viewMatrix.ToMatrix3x4f())
-                       .ToMatrix4x4f();
+    m_viewMatrix =
+        (Uni::Math::Quaternion::CreateFromAxisRad(m_rotSpeed * 0.001f * deltaTime, RotationAxis)
+             .GetMatrix() *
+         m_viewMatrix.ToMatrix3x4f())
+            .ToMatrix4x4f();
 }
 
 void InstancingTest::OnRender(Star::Window& window)
 {
     m_projectionMatrix = Star::Utils::CreatePerspectiveProjectionMatrix(
         Uni::Math::Constants::DegToRad * m_fieldOfView,
-        static_cast<float>(window.GetWidth()) /
-            static_cast<float>(window.GetHeight()),
+        static_cast<float>(window.GetWidth()) / static_cast<float>(window.GetHeight()),
         0.1f,
         10000.0f);
 
-    Star::ShaderProgram& shader =
-        Star::ShaderProgramRegistry::Get().GetShaderProgram("model_instance");
+    Star::ShaderProgram& shader = Star::Renderer::Get().GetUsedShaderProgram();
     shader.Bind();
     shader.SetUniformMat4x4f("u_view", m_viewMatrix);
     shader.SetUniformMat4x4f("u_proj", m_projectionMatrix);

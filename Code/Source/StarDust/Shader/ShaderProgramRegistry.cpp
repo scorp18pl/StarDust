@@ -10,13 +10,18 @@ namespace Star
     }
 
     void ShaderProgramRegistry::Register(
-        const std::string& shaderPath, const std::string& shaderName)
+        const std::string& shaderPath,
+        const std::string& vertexShaderName,
+        const std::string& fragmentShaderName)
     {
         m_registeredShaders.emplace(
-            shaderName,
+            fragmentShaderName.empty() ? vertexShaderName : fragmentShaderName,
             ShaderProgram{
-                shaderPath + "/" + shaderName + ".vert",
-                shaderPath + "/" + shaderName + ".frag",
+                shaderPath + "/" + vertexShaderName + ".vert",
+                shaderPath + "/" +
+                    (fragmentShaderName.empty() ? vertexShaderName
+                                                : fragmentShaderName) +
+                    ".frag",
             });
     }
 
@@ -30,14 +35,10 @@ namespace Star
     {
         static const std::string ShaderPath =
             Utils::GetResourcesPath() / "Shaders";
-        static const std::string ShaderNames[] = {
-            "model_instance",
-            "pixelate",
-        };
 
-        for (const std::string_view& shaderName : ShaderNames)
-        {
-            Register(ShaderPath.data(), shaderName.data());
-        }
+        Register(ShaderPath.data(), "model_instance");
+        Register(ShaderPath.data(), "pixelate");
+
+        Register(ShaderPath.data(), "model_instance", "model_instance_lighting");
     }
 } // namespace Star

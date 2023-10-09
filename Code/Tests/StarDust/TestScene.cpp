@@ -17,12 +17,16 @@ TestScene::TestScene(TestType testType)
         0.0f,
         20.0f,
     };
+
+    m_currentLight = m_lights.size();
+    m_lights.emplace_back(
+        Star::Renderer::Get().RegisterLightSource(Star::LightSourceType::Directional),
+        Star::LightSourceType::Directional);
+    Star::Renderer::Get().GetLightSourceData(Star::LightSourceType::Directional, m_lights[m_currentLight].first).m_vector =
+        Uni::Math::Vector3f{ 0.0f, -0.7f, -0.7f };
 }
 
-void TestScene::OnUpdate(float deltaTime)
-{
-    m_deltaTime = deltaTime;
-}
+void TestScene::OnUpdate(float deltaTime) { m_deltaTime = deltaTime; }
 
 void TestScene::OnRender(Star::Window& window)
 {
@@ -30,14 +34,11 @@ void TestScene::OnRender(Star::Window& window)
 
     if (m_Perspective)
     {
-        m_aspectRatio = static_cast<float>(window.GetWidth()) /
-            static_cast<float>(window.GetHeight());
+        m_aspectRatio =
+            static_cast<float>(window.GetWidth()) / static_cast<float>(window.GetHeight());
 
         m_projectionMatrix = Star::Utils::CreatePerspectiveProjectionMatrix(
-            m_fieldOfView * Uni::Math::Constants::DegToRad,
-            m_aspectRatio,
-            0.1f,
-            1000.0f);
+            m_fieldOfView * Uni::Math::Constants::DegToRad, m_aspectRatio, 0.1f, 1000.0f);
     }
     else
     {
@@ -50,8 +51,7 @@ void TestScene::OnRender(Star::Window& window)
             m_orthoSize.m_z);
     }
 
-    Star::ShaderProgram& shaderProgram =
-        Star::ShaderProgramRegistry::Get().GetShaderProgram("model_instance");
+    Star::ShaderProgram& shaderProgram = Star::Renderer::Get().GetUsedShaderProgram();
 
     shaderProgram.SetUniformMat4x4f("u_proj", m_projectionMatrix);
 
@@ -87,10 +87,7 @@ void TestScene::OnImGuiRender()
 
         ImGui::InputFloat3("Camera Position", &m_cameraTranslation.m_x);
 
-        ImGui::Text(
-            "Camera Rotation (Pitch, Yaw): (%f, %f)",
-            m_cameraPitch,
-            m_cameraYaw);
+        ImGui::Text("Camera Rotation (Pitch, Yaw): (%f, %f)", m_cameraPitch, m_cameraYaw);
 
         ImGui::InputFloat("Pitch", &m_cameraPitch);
         ImGui::SameLine();
@@ -106,20 +103,15 @@ void TestScene::OnImGuiRender()
 
         if (ImGui::BeginCombo(
                 "Select instance",
-                std::string(
-                    std::string("instance: ") +
-                    std::to_string(m_currentInstance))
-                    .c_str(),
+                std::string(std::string("instance: ") + std::to_string(m_currentInstance)).c_str(),
                 ImGuiComboFlags_None))
         {
             for (const auto& instance : m_instances)
             {
-                bool isSelected =
-                    (m_currentInstance == &instance - &m_instances[0]);
+                bool isSelected = (m_currentInstance == &instance - &m_instances[0]);
                 if (ImGui::Selectable(
                         std::string(
-                            std::string("instance: ") +
-                            std::to_string(&instance - &m_instances[0]))
+                            std::string("instance: ") + std::to_string(&instance - &m_instances[0]))
                             .c_str(),
                         isSelected,
                         ImGuiSelectableFlags_None))
@@ -147,19 +139,14 @@ void TestScene::OnImGuiRender()
 
             Uni::Math::Vector3f translation =
                 m_instances[m_currentInstance].GetTransform().GetTranslation();
-            Uni::Math::Vector3f scale =
-                m_instances[m_currentInstance].GetTransform().GetScale();
-            Uni::Math::Vector3f rotation = m_instances[m_currentInstance]
-                                               .GetTransform()
-                                               .GetRotation()
-                                               .GetEulerDegZYX();
+            Uni::Math::Vector3f scale = m_instances[m_currentInstance].GetTransform().GetScale();
+            Uni::Math::Vector3f rotation =
+                m_instances[m_currentInstance].GetTransform().GetRotation().GetEulerDegZYX();
 
             Uni::Grpx::Color& color = m_instances[m_currentInstance].GetColor();
 
-            const auto& meshes =
-                Star::MeshRegistry::Get().GetRegisteredMeshes();
-            Star::Mesh::IdType selectedMeshId =
-                m_instances[m_currentInstance].GetMeshId();
+            const auto& meshes = Star::MeshRegistry::Get().GetRegisteredMeshes();
+            Star::Mesh::IdType selectedMeshId = m_instances[m_currentInstance].GetMeshId();
 
             if (ImGui::BeginCombo(
                     "PrimitiveType",
@@ -170,9 +157,7 @@ void TestScene::OnImGuiRender()
                 {
                     bool isSelected = (meshId == selectedMeshId);
                     if (ImGui::Selectable(
-                            mesh.m_name.c_str(),
-                            isSelected,
-                            ImGuiSelectableFlags_None))
+                            mesh.m_name.c_str(), isSelected, ImGuiSelectableFlags_None))
                     {
                         m_instances[m_currentInstance].SetMeshId(meshId);
                     }
@@ -198,8 +183,7 @@ void TestScene::OnImGuiRender()
                 rotation = Uni::Math::Vector3f{ 0.0f };
             }
 
-            m_instances[m_currentInstance].GetTransform().SetTranslation(
-                translation);
+            m_instances[m_currentInstance].GetTransform().SetTranslation(translation);
             m_instances[m_currentInstance].GetTransform().SetScale(scale);
             m_instances[m_currentInstance].GetTransform().SetRotation(
                 Uni::Math::Quaternion::CreateFromEulerDegZYX(rotation));
@@ -212,23 +196,19 @@ void TestScene::OnImGuiRender()
         }
     }
 
-    if (ImGui::CollapsingHeader("Point Lights"))
+    if (ImGui::CollapsingHeader("Light Sources"))
     {
         ImGui::Indent(4.0f);
-        ImGui::Text("Point Light count: %d", m_lights.size());
+        ImGui::Text("Light Source count: %d", m_lights.size());
 
         if (ImGui::BeginCombo(
-                "Select point light",
-                std::string(
-                    std::string("Light Source: ") +
-                    std::to_string(m_currentLight))
-                    .c_str(),
+                "Select Light Source",
+                std::string(std::string("Light Source: ") + std::to_string(m_currentLight)).c_str(),
                 ImGuiComboFlags_None))
         {
             for (const auto& pointLight : m_lights)
             {
-                bool isSelected =
-                    (m_currentLight == &pointLight - &m_lights[0]);
+                bool isSelected = (m_currentLight == &pointLight - &m_lights[0]);
                 if (ImGui::Selectable(
                         std::string(
                             std::string("Light Source: ") +
@@ -245,8 +225,7 @@ void TestScene::OnImGuiRender()
             {
                 m_currentLight = m_lights.size();
                 m_lights.emplace_back(
-                    Star::Renderer::Get().RegisterLightSource(
-                        Star::LightSourceType::Point),
+                    Star::Renderer::Get().RegisterLightSource(Star::LightSourceType::Point),
                     Star::LightSourceType::Point);
             }
 
@@ -254,8 +233,7 @@ void TestScene::OnImGuiRender()
             {
                 m_currentLight = m_lights.size();
                 m_lights.emplace_back(
-                    Star::Renderer::Get().RegisterLightSource(
-                        Star::LightSourceType::Directional),
+                    Star::Renderer::Get().RegisterLightSource(Star::LightSourceType::Directional),
                     Star::LightSourceType::Directional);
             }
 
@@ -267,18 +245,14 @@ void TestScene::OnImGuiRender()
             ImGui::Text("Selected Light Source: %d", m_currentLight);
             ImGui::Indent(4.0f);
 
-            Star::LightData& pointLight =
-                Star::Renderer::Get().GetLightSourceData(
-                    m_lights[m_currentLight].second,
-                    m_lights[m_currentLight].first);
+            Star::LightData& pointLight = Star::Renderer::Get().GetLightSourceData(
+                m_lights[m_currentLight].second, m_lights[m_currentLight].first);
 
             ImGui::InputFloat3(
-                (m_lights[m_currentLight].second == Star::LightSourceType::Point
-                     ? "Position"
-                     : "Direction"),
+                (m_lights[m_currentLight].second == Star::LightSourceType::Point ? "Position"
+                                                                                 : "Direction"),
                 reinterpret_cast<float*>(&pointLight.m_vector));
-            ImGui::ColorEdit3(
-                "Light Color", reinterpret_cast<float*>(&pointLight.m_color));
+            ImGui::ColorEdit3("Light Color", reinterpret_cast<float*>(&pointLight.m_color));
             ImGui::InputFloat("Intensity", &pointLight.m_intensity);
 
             ImGui::Unindent(4.0f);
@@ -299,42 +273,36 @@ void TestScene::HandleCamera(Star::Window& window)
     if (glfwGetKey(glfwWindow, GLFW_KEY_W) == GLFW_PRESS)
     {
         m_cameraTranslation += sensitivity * m_deltaTime *
-            (Uni::Math::Matrix3x4f::CreateRotationEulerDegrees(
-                 m_cameraYaw, Uni::Math::Axis::Z) *
+            (Uni::Math::Matrix3x4f::CreateRotationEulerDegrees(m_cameraYaw, Uni::Math::Axis::Z) *
              Uni::Math::Vector3f{ 1.0f, 0.0f, 0.0f });
     }
     if (glfwGetKey(glfwWindow, GLFW_KEY_A) == GLFW_PRESS)
     {
         m_cameraTranslation += sensitivity * m_deltaTime *
-            (Uni::Math::Matrix3x4f::CreateRotationEulerDegrees(
-                 m_cameraYaw, Uni::Math::Axis::Z) *
+            (Uni::Math::Matrix3x4f::CreateRotationEulerDegrees(m_cameraYaw, Uni::Math::Axis::Z) *
              Uni::Math::Vector3f{ 0.0f, 1.0f, 0.0f });
     }
     if (glfwGetKey(glfwWindow, GLFW_KEY_S) == GLFW_PRESS)
     {
         m_cameraTranslation += sensitivity * m_deltaTime *
-            (Uni::Math::Matrix3x4f::CreateRotationEulerDegrees(
-                 m_cameraYaw, Uni::Math::Axis::Z) *
+            (Uni::Math::Matrix3x4f::CreateRotationEulerDegrees(m_cameraYaw, Uni::Math::Axis::Z) *
              Uni::Math::Vector3f{ -1.0f, 0.0f, 0.0f });
     }
     if (glfwGetKey(glfwWindow, GLFW_KEY_D) == GLFW_PRESS)
     {
         m_cameraTranslation += sensitivity * m_deltaTime *
-            (Uni::Math::Matrix3x4f::CreateRotationEulerDegrees(
-                 m_cameraYaw, Uni::Math::Axis::Z) *
+            (Uni::Math::Matrix3x4f::CreateRotationEulerDegrees(m_cameraYaw, Uni::Math::Axis::Z) *
              Uni::Math::Vector3f{ 0.0f, -1.0f, 0.0f });
     }
 
     if (glfwGetKey(glfwWindow, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
     {
-        m_cameraTranslation += sensitivity * m_deltaTime *
-            Uni::Math::Vector3f{ 0.0f, 0.0f, -1.0f };
+        m_cameraTranslation += sensitivity * m_deltaTime * Uni::Math::Vector3f{ 0.0f, 0.0f, -1.0f };
     }
 
     if (glfwGetKey(glfwWindow, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
     {
-        m_cameraTranslation +=
-            sensitivity * m_deltaTime * Uni::Math::Vector3f{ 0.0f, 0.0f, 1.0f };
+        m_cameraTranslation += sensitivity * m_deltaTime * Uni::Math::Vector3f{ 0.0f, 0.0f, 1.0f };
     }
 
     static bool last = false;
@@ -384,16 +352,13 @@ void TestScene::HandleCamera(Star::Window& window)
     }
 
     const Uni::Math::Matrix3x4f cameraRotation =
-        Uni::Math::Matrix3x4f::CreateRotationEulerDegrees(
-            m_cameraYaw, Uni::Math::Axis::Z) *
-        Uni::Math::Matrix3x4f::CreateRotationEulerDegrees(
-            m_cameraPitch, Uni::Math::Axis::Y);
+        Uni::Math::Matrix3x4f::CreateRotationEulerDegrees(m_cameraYaw, Uni::Math::Axis::Z) *
+        Uni::Math::Matrix3x4f::CreateRotationEulerDegrees(m_cameraPitch, Uni::Math::Axis::Y);
 
-    Uni::Math::Vector3f cameraFront = m_cameraTranslation +
-        cameraRotation * Uni::Math::Vector3f::CreateAxisX();
+    Uni::Math::Vector3f cameraFront =
+        m_cameraTranslation + cameraRotation * Uni::Math::Vector3f::CreateAxisX();
 
-    Uni::Math::Vector3f cameraUp =  cameraRotation * Uni::Math::Vector3f::CreateAxisZ();
+    Uni::Math::Vector3f cameraUp = cameraRotation * Uni::Math::Vector3f::CreateAxisZ();
 
-    m_viewMatrix = Star::Utils::CreateLookAtMatrix(
-        m_cameraTranslation, cameraFront, cameraUp);
+    m_viewMatrix = Star::Utils::CreateLookAtMatrix(m_cameraTranslation, cameraFront, cameraUp);
 }

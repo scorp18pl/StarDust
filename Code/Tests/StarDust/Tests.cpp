@@ -9,6 +9,7 @@
 int main()
 {
     Star::Window window = Star::Window(1080, 1080, "StarDust Tests");
+    Star::Renderer::Get().SetOptionFlags(Star::Renderer::OptionFlag::Lighting);
 
     Test* currentTest = nullptr;
     int pixelizationFactor = 4;
@@ -28,22 +29,18 @@ int main()
     float pointLightLinear = 0.09f;
     float pointLightQuadratic = 0.032f;
 
-    const std::filesystem::path PalettePath =
-        Star::Utils::GetResourcesPath() / "Palettes";
+    const std::filesystem::path PalettePath = Star::Utils::GetResourcesPath() / "Palettes";
 
     std::vector<Uni::Grpx::ColorPalette> colorPalettes = {
-        Uni::Grpx::ColorPalette::LoadFromFile(
-            PalettePath / "cretaceous-16.hex"),
+        Uni::Grpx::ColorPalette::LoadFromFile(PalettePath / "cretaceous-16.hex"),
         Uni::Grpx::ColorPalette::LoadFromFile(PalettePath / "apollo.hex"),
         Uni::Grpx::ColorPalette::LoadFromFile(PalettePath / "endesga-32.hex"),
         Uni::Grpx::ColorPalette::LoadFromFile(PalettePath / "resurrect-64.hex"),
-        Uni::Grpx::ColorPalette::LoadFromFile(
-            PalettePath / "universalis-42.hex"),
+        Uni::Grpx::ColorPalette::LoadFromFile(PalettePath / "universalis-42.hex"),
     };
     unsigned int currentColorPalette = colorPalettes.size() - 1;
 
-    Star::ShaderProgram& modelInstanceShader =
-        Star::ShaderProgramRegistry::Get().GetShaderProgram("model_instance");
+    Star::ShaderProgram& modelInstanceShader = Star::Renderer::Get().GetUsedShaderProgram();
 
     Uni::Sys::Clock clock;
 
@@ -89,23 +86,15 @@ int main()
 
         if (enablePaletteSnap)
         {
-            ImGui::Text(
-                "Color palette: %s",
-                colorPalettes[currentColorPalette].GetName().c_str());
+            ImGui::Text("Color palette: %s", colorPalettes[currentColorPalette].GetName().c_str());
 
             ImGui::SliderInt(
-                "Color palette:",
-                (int*)&currentColorPalette,
-                0,
-                colorPalettes.size() - 1);
+                "Color palette:", (int*)&currentColorPalette, 0, colorPalettes.size() - 1);
         }
 
-        Star::ShaderProgramRegistry::Get()
-            .GetShaderProgram("model_instance")
-            .SetUniform1i(
-                "u_colorPaletteCount",
-                enablePaletteSnap *
-                    colorPalettes[currentColorPalette].GetColors().size());
+        modelInstanceShader.SetUniform1i(
+            "u_colorPaletteCount",
+            enablePaletteSnap * colorPalettes[currentColorPalette].GetColors().size());
 
         modelInstanceShader.SetUniform4fArray(
             "u_colorPalette",
@@ -137,25 +126,16 @@ int main()
 
         modelInstanceShader.SetUniform1f("u_ambientStrenght", ambientStrenght);
         modelInstanceShader.SetUniform1f("u_diffuseStrenght", diffuseStrenght);
-        modelInstanceShader.SetUniform1f(
-            "u_specularStrenght", specularStrenght);
+        modelInstanceShader.SetUniform1f("u_specularStrenght", specularStrenght);
 
-        modelInstanceShader.SetUniform1f(
-            "u_pointLightConstant", pointLightConstant);
-        modelInstanceShader.SetUniform1f(
-            "u_pointLightLinear", pointLightLinear);
-        modelInstanceShader.SetUniform1f(
-            "u_pointLightQuadratic", pointLightQuadratic);
+        modelInstanceShader.SetUniform1f("u_pointLightConstant", pointLightConstant);
+        modelInstanceShader.SetUniform1f("u_pointLightLinear", pointLightLinear);
+        modelInstanceShader.SetUniform1f("u_pointLightQuadratic", pointLightQuadratic);
 
-        modelInstanceShader.SetUniform3f(
-            "u_lightDir", lightDir.m_x, lightDir.m_y, lightDir.m_z);
+        modelInstanceShader.SetUniform3f("u_lightDir", lightDir.m_x, lightDir.m_y, lightDir.m_z);
 
         modelInstanceShader.SetUniform4f(
-            "u_lightColor",
-            lightColor.m_x,
-            lightColor.m_y,
-            lightColor.m_z,
-            lightColor.m_w);
+            "u_lightColor", lightColor.m_x, lightColor.m_y, lightColor.m_z, lightColor.m_w);
 
         if (currentTest)
         {

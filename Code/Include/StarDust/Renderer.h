@@ -10,16 +10,24 @@
 
 namespace Star
 {
-    enum class PostProcFlag : uint8_t
-    {
-        None = 0,
-        Pixelized = 1 << 0,
-    };
-
     class Renderer
     {
     public:
-        static Renderer& Get();
+        // clang-format off
+        enum OptionFlag : uint16_t
+        {
+            None                = 0,
+            Lighting            = 1 << 0,
+        };
+        // clang-format on
+
+        static Renderer& Get()
+        {
+            static Renderer renderer;
+            return renderer;
+        }
+
+        ShaderProgram& GetUsedShaderProgram() const;
 
         int RegisterLightSource(LightSourceType type);
         void UnregisterLightSource(LightSourceType type, int pointLightId);
@@ -27,7 +35,7 @@ namespace Star
 
         void Render();
 
-        void SetPostprocessingFlags(PostProcFlag flags = PostProcFlag::None);
+        void SetOptionFlags(OptionFlag flags = OptionFlag::None) { m_optionFlags = flags; }
         void SetPixelizationResolution(
             unsigned int width,
             unsigned int height,
@@ -35,7 +43,6 @@ namespace Star
             unsigned int windowHeight);
 
     private:
-
         struct PointLightSystem
         {
             std::unordered_map<int, LightData> m_idToDataMap;
@@ -44,7 +51,7 @@ namespace Star
 
         std::unordered_map<LightSourceType, PointLightSystem> m_lightSources;
 
-        PostProcFlag m_postProcFlags = PostProcFlag::None;
+        OptionFlag m_optionFlags = OptionFlag::None;
 
         unsigned int m_pixelWidth = 0;
         unsigned int m_pixelHeight = 0;
@@ -58,7 +65,6 @@ namespace Star
 
         Renderer();
 
-        void UpdatePointLightUniforms(
-            ShaderProgram& shader, LightSourceType type);
+        void UpdatePointLightUniforms(ShaderProgram& shader, LightSourceType type);
     };
 } // namespace Star
