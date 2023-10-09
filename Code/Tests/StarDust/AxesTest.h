@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Test.h"
-#include <StarDust/Model/ModelInstance.h>
 #include <StarDust/Model/MeshRegistry.h>
+#include <StarDust/Model/ModelInstance3D.h>
 #include <Universal/Math/Transform.h>
 
 class AxesTest : public Test
@@ -16,9 +16,9 @@ public:
     void OnImGuiRender() override;
 
 private:
-    Star::ModelInstance m_axisX{ Star::MeshRegistry::Get().GetMeshId("Box") };
-    Star::ModelInstance m_axisY{ Star::MeshRegistry::Get().GetMeshId("Box") };
-    Star::ModelInstance m_axisZ{ Star::MeshRegistry::Get().GetMeshId("Box") };
+    Star::ModelInstance3D m_axisX{ Star::Mesh::GetId("Box") };
+    Star::ModelInstance3D m_axisY{ Star::Mesh::GetId("Box") };
+    Star::ModelInstance3D m_axisZ{ Star::Mesh::GetId("Box") };
 
     Uni::Math::Transform m_rootTransform;
 

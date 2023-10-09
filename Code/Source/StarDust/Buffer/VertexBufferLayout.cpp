@@ -1,5 +1,5 @@
 #include <StarDust/Buffer/VertexBufferLayout.h>
-#include <StarDust/Model/ModelInstance.h>
+#include <StarDust/Model/ModelInstance3D.h>
 #include <StarDust/Utilities/Utils.h>
 #include <Universal/Math/Matrix/Matrix3x4f.h>
 #include <Universal/Math/Vector/Vector3f.h>
@@ -62,7 +62,7 @@ namespace Star
     }
 
     template<>
-    void VertexBufferLayout::Push<ModelInstanceData>(unsigned int count)
+    void VertexBufferLayout::Push<ModelInstance::Data>(unsigned int count)
     {
         for (int i = 0; i < 3; ++i)
         {

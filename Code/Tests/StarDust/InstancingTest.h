@@ -22,7 +22,7 @@ private:
     float m_speedMultiplier = 0.001f;
     float m_fieldOfView = 45.0f;
 
-    std::vector<Star::ModelInstance> m_instances;
+    std::vector<Star::ModelInstance3D> m_instances;
     std::vector<Uni::Math::Vector3f> m_velocities;
     Star::LightSource m_lightSource;
 

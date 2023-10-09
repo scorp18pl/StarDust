@@ -8,7 +8,10 @@
 
 namespace Star
 {
-    struct ModelInstanceData;
+    namespace ModelInstance
+    {
+        struct Data;
+    } // namespace ModelInstance
 
     //! Class used for rendering a mesh.
     class Model
@@ -22,7 +25,7 @@ namespace Star
         [[nodiscard]] const Mesh& GetMesh() const;
         Mesh& GetMesh();
 
-        void RenderInstances(std::vector<ModelInstanceData>& instances);
+        void RenderInstances(std::vector<ModelInstance::Data>& instances);
 
         Model& operator=(const Model& other);
 

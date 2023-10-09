@@ -1,4 +1,5 @@
 #include <StarDust/Model/MeshRegistry.h>
+#include <StarDust/Model/Model.h>
 #include <StarDust/Model/ModelInstanceSystem.h>
 #include <stdexcept>
 
@@ -10,8 +11,7 @@ namespace Star
         return instance;
     }
 
-    ModelInstance::IdType ModelInstanceSystem::RegisterModelInstance(
-        Mesh::IdType meshId)
+    ModelInstance::IdType ModelInstanceSystem::RegisterModelInstance(Mesh::IdType meshId)
     {
         ModelInstance::IdType id = ModelInstance::InvalidId;
         if (m_freeIds.empty())
@@ -30,17 +30,14 @@ namespace Star
             m_models.at(meshId).m_instances.insert(id);
         } catch (const std::out_of_range&)
         {
-            const auto& mesh =
-                MeshRegistry::Get().GetRegisteredMeshes().find(meshId);
+            const auto& mesh = MeshRegistry::Get().GetRegisteredMeshes().find(meshId);
             if (mesh == MeshRegistry::Get().GetRegisteredMeshes().end())
             {
-                throw std::runtime_error(
-                    "Mesh with id " + std::to_string(meshId) + " not found");
+                throw std::runtime_error("Mesh with id " + std::to_string(meshId) + " not found");
             }
             else
             {
-                m_models.emplace(
-                    meshId, ModelWrapper{ Model{ mesh->second }, { id } });
+                m_models.emplace(meshId, ModelWrapper{ Model{ mesh->second }, { id } });
             }
         }
 
@@ -64,8 +61,7 @@ namespace Star
         m_freeIds.push_back(id);
     }
 
-    ModelInstanceData& ModelInstanceSystem::GetInstanceData(
-        ModelInstance::IdType id)
+    ModelInstance::Data& ModelInstanceSystem::GetInstanceData(ModelInstance::IdType id)
     {
         return m_instances[id].m_data;
     }
@@ -93,8 +89,7 @@ namespace Star
 
     ModelInstanceSystem::ModelInstanceSystem()
     {
-        const auto& registeredMeshes =
-            MeshRegistry::Get().GetRegisteredMeshes();
+        const auto& registeredMeshes = MeshRegistry::Get().GetRegisteredMeshes();
         for (auto& [meshId, mesh] : registeredMeshes)
         {
             m_models.emplace(meshId, ModelWrapper{ Model{ mesh }, {} });

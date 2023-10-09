@@ -3,7 +3,7 @@
 #include <StarDust/Buffer/FrameBuffer.h>
 #include <StarDust/Buffer/RenderBuffer.h>
 #include <StarDust/LightSource.h>
-#include <StarDust/Model/ModelInstance.h>
+#include <StarDust/Model/ModelInstance3D.h>
 #include <StarDust/Shader/ShaderProgram.h>
 #include <StarDust/Texture.h>
 #include <unordered_map>

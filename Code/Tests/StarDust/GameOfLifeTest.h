@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Test.h"
-#include <StarDust/Model/ModelInstance.h>
+#include <StarDust/Model/ModelInstance3D.h>
 #include <Universal/Graphics/Bitmap.h>
 #include <Universal/Math/Matrix/Matrix4x4f.h>
 #include <Universal/Math/Random/Generator.h>
@@ -48,7 +48,7 @@ private:
     Star::Texture m_texture;
     Board m_board;
     Uni::Grpx::Bitmap m_bitmap;
-    Star::ModelInstance m_instance;
+    Star::ModelInstance3D m_instance;
     Star::LightSource m_lightSource;
     bool m_isPaused{ false };
     float m_time{ 0.0f };

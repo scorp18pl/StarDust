@@ -1,22 +1,37 @@
 #pragma once
 
-#include <StarDust/Model/ModelInstance.h>
+#include <StarDust/Model/Mesh.h>
+#include <StarDust/Model/Model.h>
+#include <Universal/Graphics/Color.h>
+#include <Universal/Math/Matrix/Matrix3x4f.h>
 #include <set>
 #include <unordered_map>
 
 namespace Star
 {
+    namespace ModelInstance
+    {
+        struct Data
+        {
+            Uni::Math::Matrix3x4f m_transform;
+            Uni::Math::Matrix3x4f m_normalTransform;
+            Uni::Grpx::Color m_color;
+        };
+
+        using IdType = int;
+        static constexpr IdType InvalidId = -1;
+    } // namespace ModelInstance
+
     class ModelInstanceSystem
     {
     public:
         static ModelInstanceSystem& Get();
 
         ModelInstance::IdType RegisterModelInstance(Mesh::IdType meshId);
-        void UpdateModelInstanceMeshId(
-            ModelInstance::IdType id, Mesh::IdType meshId);
+        void UpdateModelInstanceMeshId(ModelInstance::IdType id, Mesh::IdType meshId);
         void UnregisterModelInstance(ModelInstance::IdType id);
 
-        ModelInstanceData& GetInstanceData(ModelInstance::IdType id);
+        ModelInstance::Data& GetInstanceData(ModelInstance::IdType id);
 
         void Render();
 
@@ -26,7 +41,7 @@ namespace Star
         struct InstanceWrapper
         {
             Mesh::IdType m_meshId{ Mesh::InvalidId };
-            ModelInstanceData m_data;
+            ModelInstance::Data m_data;
         };
 
         struct ModelWrapper
@@ -39,6 +54,6 @@ namespace Star
         std::unordered_map<ModelInstance::IdType, InstanceWrapper> m_instances;
         std::vector<ModelInstance::IdType> m_freeIds;
 
-        std::vector<ModelInstanceData> m_renderData;
+        std::vector<ModelInstance::Data> m_renderData;
     };
 } // namespace Star

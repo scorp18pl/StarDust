@@ -17,7 +17,7 @@ MeshTest::MeshTest()
               1.0f,
           })
 {
-    m_instance = Star::ModelInstance(
+    m_instance = Star::ModelInstance3D(
         m_currentMeshId,
         Uni::Math::Transform(),
         Uni::Grpx::Color::CreateFromVector3f(Uni::Math::Vector3f{ 1.0f }, 1.0f));
@@ -74,7 +74,7 @@ void MeshTest::OnImGuiRender()
             {
                 m_currentName = mesh.m_name;
                 m_currentMeshId = meshId;
-                m_instance = Star::ModelInstance(
+                m_instance = Star::ModelInstance3D(
                     m_currentMeshId,
                     Uni::Math::Transform(),
                     Uni::Grpx::Color::CreateFromVector3f(Uni::Math::Vector3f{ 1.0f }, 1.0f));

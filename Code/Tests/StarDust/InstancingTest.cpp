@@ -1,7 +1,7 @@
 #include "InstancingTest.h"
 
-#include <StarDust/Model/MeshRegistry.h>
-#include <StarDust/Model/ModelInstance.h>
+#include <StarDust/Model/Mesh.h>
+#include <StarDust/Model/ModelInstance3D.h>
 #include <StarDust/Renderer.h>
 #include <StarDust/Shader/ShaderProgram.h>
 #include <StarDust/Utilities/Math.h>
@@ -37,7 +37,7 @@ InstancingTest::InstancingTest()
         });
 
         m_instances.emplace_back(
-            Star::MeshRegistry::Get().GetMeshId("Icosahedron"),
+            Star::Mesh::GetId("Icosahedron"),
             transform,
             Uni::Grpx::Color::CreateFromVector3f(
                 Uni::Math::Vector3f::CreateRandomUnitVector(generator) * 2.0f,

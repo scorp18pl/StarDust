@@ -16,6 +16,7 @@ public:
         TerrainGeneration,
         CubeGame,
         GameOfLife,
+        Sprite,
     };
 
     static const std::map<TestType, std::string> TestTypeMap;
