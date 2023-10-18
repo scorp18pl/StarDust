@@ -2,21 +2,43 @@
 
 namespace Star
 {
+    SpriteInstance SpriteInstance::CreateSpriteInstance(
+        const std::string& spriteName,
+        const Uni::Math::Vector3f& translation,
+        float scale,
+        float rotationRad)
+    {
+        return SpriteInstance(
+            SpriteAsset::GetSpriteMeshName(spriteName), translation, scale, rotationRad);
+    }
+
+    SpriteInstance SpriteInstance::CreateSubSpriteInstance(
+        const std::string& spriteName,
+        const std::string& subspriteName,
+        const Uni::Math::Vector3f& translation,
+        float scale,
+        float rotationRad)
+    {
+        return SpriteInstance(
+            SpriteAsset::GetSubspriteMeshName(spriteName, subspriteName),
+            translation,
+            scale,
+            rotationRad);
+    }
 
     SpriteInstance::SpriteInstance(
-        SpriteAsset::IdType spriteId,
+        const std::string& spriteMeshName,
         const Uni::Math::Vector3f& translation,
         float scale,
         float rotationRad)
         : m_instanceId{ ModelInstance::InvalidId }
-        , m_spriteId{ spriteId }
         , m_translation{ translation }
         , m_scale{ scale }
         , m_rotation{ rotationRad }
     {
-        Mesh::IdType meshId = Mesh::GetId(SpriteAsset::GetMeshName(spriteId));
-        m_instanceId = ModelInstanceSystem::Get().RegisterModelInstance(meshId);
+        Mesh::IdType meshId = Mesh::GetId(spriteMeshName);
 
+        m_instanceId = ModelInstanceSystem::Get().RegisterModelInstance(meshId);
         Update();
     }
 
@@ -38,11 +60,10 @@ namespace Star
         }
     }
 
-    void SpriteInstance::SetSprite(SpriteAsset::IdType spriteId)
+    void SpriteInstance::SetSprite(const std::string& spriteName)
     {
-        m_spriteId = spriteId;
-        ModelInstanceSystem::Get().UpdateModelInstanceMeshId(
-            m_instanceId, Mesh::GetId(SpriteAsset::GetMeshName(spriteId)));
+        m_spriteId = SpriteAsset::GetId(spriteName);
+        ModelInstanceSystem::Get().UpdateModelInstanceMeshId(m_instanceId, Mesh::GetId(spriteName));
     }
 
     void SpriteInstance::Update()

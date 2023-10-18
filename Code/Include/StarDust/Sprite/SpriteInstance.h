@@ -10,20 +10,18 @@ namespace Star
     class SpriteInstance
     {
     public:
-        SpriteInstance(
-            SpriteAsset::IdType spriteId,
+        static SpriteInstance CreateSpriteInstance(
+            const std::string& spriteName,
             const Uni::Math::Vector3f& translation = Uni::Math::Vector3f::CreateZero(),
             float scale = 1.0f,
             float rotationRad = 0.0f);
 
-        SpriteInstance(
+        static SpriteInstance CreateSubSpriteInstance(
             const std::string& spriteName,
+            const std::string& subspriteName,
             const Uni::Math::Vector3f& translation = Uni::Math::Vector3f::CreateZero(),
             float scale = 1.0f,
-            float rotationRad = 0.0f)
-            : SpriteInstance(SpriteAsset::GetId(spriteName), translation, scale, rotationRad)
-        {
-        }
+            float rotationRad = 0.0f);
 
         SpriteInstance(const SpriteInstance& other) { (*this) = other; }
         SpriteInstance(SpriteInstance&&) noexcept;
@@ -38,14 +36,19 @@ namespace Star
         void SetScale(float scale) { m_scale = scale; }
         void SetRotation(float rotation) { m_rotation = rotation; }
 
-        void SetSprite(SpriteAsset::IdType spriteId);
-        void SetSprite(const std::string& spriteName) { SetSprite(SpriteAsset::GetId(spriteName)); }
+        void SetSprite(const std::string& spriteName);
 
         void Update();
 
         SpriteInstance& operator=(const SpriteInstance&);
 
     private:
+        SpriteInstance(
+            const std::string& spriteMeshName,
+            const Uni::Math::Vector3f& translation = Uni::Math::Vector3f::CreateZero(),
+            float scale = 1.0f,
+            float rotationRad = 0.0f);
+
         ModelInstance::IdType m_instanceId{ ModelInstance::InvalidId };
         SpriteAsset::IdType m_spriteId{ SpriteAsset::InvalidId };
 
