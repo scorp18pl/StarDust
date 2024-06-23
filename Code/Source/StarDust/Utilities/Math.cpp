@@ -8,8 +8,7 @@ namespace Star::Utils
         float fov, float aspectRatio, float near, float far)
     {
         if (!Uni::Math::IsInRange(fov, 0.0f, Uni::Math::Constants::PI) ||
-            aspectRatio == 0.0f ||
-            !Uni::Math::IsInRange(aspectRatio, 0.0f, 1.0f) || near == 0.0f ||
+            aspectRatio <= 0.0f || near == 0.0f ||
             near == far || !Uni::Math::IsInRange(near, 0.0f, far))
         {
             throw std::invalid_argument("Invalid argument(s)");
