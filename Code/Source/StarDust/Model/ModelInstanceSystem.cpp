@@ -45,13 +45,27 @@ namespace Star
     }
 
     void ModelInstanceSystem::UpdateModelInstanceMeshId(
-        ModelInstance::IdType id, Mesh::IdType meshId)
+        ModelInstance::IdType id,
+        Mesh::IdType meshId)
     {
         const Mesh::IdType OldMeshId = m_instances[id].m_meshId;
         m_instances[id].m_meshId = meshId;
 
         m_models.at(OldMeshId).m_instances.erase(id);
         m_models.at(meshId).m_instances.insert(id);
+    }
+
+    void ModelInstanceSystem::UpdateMeshModel(const Mesh& mesh)
+    {
+        Mesh::IdType meshId = mesh.GetId();
+        auto modelIt = m_models.find(meshId);
+        if (modelIt == m_models.end())
+        {
+            throw std::runtime_error(
+                "Model for the mesh with id " + std::to_string(meshId) + " not found");
+        }
+
+        modelIt->second.m_model = Model(mesh);
     }
 
     void ModelInstanceSystem::UnregisterModelInstance(ModelInstance::IdType id)

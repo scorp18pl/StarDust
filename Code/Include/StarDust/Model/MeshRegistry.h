@@ -20,6 +20,7 @@ namespace Star
         Mesh& GetMesh(const std::string& name) { return GetMesh(Mesh::GetId(name)); }
 
         void RegisterMesh(const Mesh& mesh);
+        void UpdateMesh(const Mesh& mesh);
         void UnregisterMesh(Mesh::IdType id);
         void UnregisterMesh(const std::string& name) { UnregisterMesh(Mesh::GetId(name)); }
 

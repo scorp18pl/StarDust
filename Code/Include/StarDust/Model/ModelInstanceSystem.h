@@ -29,6 +29,7 @@ namespace Star
 
         ModelInstance::IdType RegisterModelInstance(Mesh::IdType meshId);
         void UpdateModelInstanceMeshId(ModelInstance::IdType id, Mesh::IdType meshId);
+        void UpdateMeshModel(const Mesh& mesh);
         void UnregisterModelInstance(ModelInstance::IdType id);
 
         ModelInstance::Data& GetInstanceData(ModelInstance::IdType id);

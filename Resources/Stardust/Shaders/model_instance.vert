@@ -1,18 +1,18 @@
 #version 460 core
 
-layout (location = 0) in vec3 position;
-layout (location = 1) in vec3 normal;
-layout (location = 2) in vec2 texCoord;
+in vec3 position;
+in vec3 normal;
+in vec2 texCoord;
 
-layout (location = 3) in vec4 modelMatrixRow0;
-layout (location = 4) in vec4 modelMatrixRow1;
-layout (location = 5) in vec4 modelMatrixRow2;
+in vec4 modelMatrixRow0;
+in vec4 modelMatrixRow1;
+in vec4 modelMatrixRow2;
 
-layout (location = 6) in vec4 normalMatrixRow0;
-layout (location = 7) in vec4 normalMatrixRow1;
-layout (location = 8) in vec4 normalMatrixRow2;
+in vec4 normalMatrixRow0;
+in vec4 normalMatrixRow1;
+in vec4 normalMatrixRow2;
 
-layout (location = 9) in vec4 color;
+in vec4 color;
 
 out vec2 i_texCoord;
 out vec4 i_color;
