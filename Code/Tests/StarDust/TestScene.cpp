@@ -4,7 +4,7 @@
 #include <StarDust/Shader/ShaderProgramRegistry.h>
 #include <StarDust/Utilities/Math.h>
 #include <Universal/Math/Math.h>
-#include <imgui/imgui.h>
+#include <imgui.h>
 
 TestScene::TestScene(TestType testType)
     : Test(testType)

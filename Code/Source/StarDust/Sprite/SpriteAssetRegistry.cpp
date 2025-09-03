@@ -1,6 +1,7 @@
 #include <StarDust/Model/MeshRegistry.h>
 #include <StarDust/Sprite/SpriteAssetRegistry.h>
-#include <complex>
+#include <algorithm>
+#include <cmath>
 #include <stdexcept>
 #include <vector>
 

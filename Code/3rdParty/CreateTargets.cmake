@@ -24,7 +24,7 @@ set(IMGUI_SOURCES
         ${3RD_PARTY_DIR}/imgui/include/imgui/imstb_textedit.h
         ${3RD_PARTY_DIR}/imgui/include/imgui/imstb_truetype.h
         )
-set(IMGUI_INCLUDES ${3RD_PARTY_DIR}/imgui/include)
+set(IMGUI_INCLUDES ${3RD_PARTY_DIR}/imgui/include/imgui)
 
 set(3RD_PARTY_SOURCES ${GLAD_SOURCES} ${IMGUI_SOURCES})
 set(3RD_PARTY_INCLUDES ${GLAD_INCLUDES} ${IMGUI_INCLUDES})
