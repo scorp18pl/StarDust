@@ -8,6 +8,28 @@
 
 namespace Star
 {
+    namespace
+    {
+        std::string GetGlslVersion()
+        {
+            const char* versionStr = reinterpret_cast<const char*>(glGetString(GL_SHADING_LANGUAGE_VERSION));
+            if (!versionStr)
+            {
+                return "#version 130";
+            }
+
+            std::istringstream iss(versionStr);
+            int major = 0, minor = 0;
+            char dot;
+            if (iss >> major >> dot >> minor && dot == '.')
+            {
+                return "#version " + std::to_string(major) + std::to_string(minor);
+            }
+
+            return "#version 130";
+        }
+    }
+
     Window::Window(int width, int height, const char* title)
         : m_width{ width }
         , m_height{ height }
@@ -42,9 +64,11 @@ namespace Star
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO();
         (void)io;
+        io.FontGlobalScale = 2.0f;
 
         ImGui_ImplGlfw_InitForOpenGL(m_window, true);
-        ImGui_ImplOpenGL3_Init("#version 460");
+        ImGui_ImplOpenGL3_Init(GetGlslVersion().c_str());
+
 
         ImGui::StyleColorsDark();
 
